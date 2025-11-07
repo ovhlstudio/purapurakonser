@@ -1,0 +1,926 @@
+ 03:16:28.805  🎵 ===== MUSIC PLAYER UI COMPLETE AUDIT =====  -  Edit
+  03:16:28.808
+📁 ScreenGui : MusicPlayerGUI  -  Edit
+  03:16:28.808  📍 Path: StarterGui.MusicPlayerGUI  -  Edit
+  03:16:28.808     ⚙️  Name: MusicPlayerGUI  -  Edit
+  03:16:28.808
+📁 Frame : PaddingFrame  -  Edit
+  03:16:28.808  📍 Path: StarterGui.MusicPlayerGUI.PaddingFrame  -  Edit
+  03:16:28.808     ⚙️  Visible: true  -  Edit
+  03:16:28.808     ⚙️  ClipsDescendants: false  -  Edit
+  03:16:28.808     ⚙️  BorderColor3: 0, 0, 0  -  Edit
+  03:16:28.808     ⚙️  LayoutOrder: 0  -  Edit
+  03:16:28.808     ⚙️  BackgroundTransparency: 1  -  Edit
+  03:16:28.808     ⚙️  Rotation: 0  -  Edit
+  03:16:28.808     ⚙️  BackgroundColor3: 0, 0, 0  -  Edit
+  03:16:28.808     ⚙️  Name: PaddingFrame  -  Edit
+  03:16:28.808     ⚙️  Position: {0, 0}, {0, 0}  -  Edit
+  03:16:28.808     ⚙️  AnchorPoint: 0, 0  -  Edit
+  03:16:28.808     ⚙️  ZIndex: 1  -  Edit
+  03:16:28.808     ⚙️  BorderSizePixel: 0  -  Edit
+  03:16:28.808     ⚙️  Size: {0, 0}, {0, 0}  -  Edit
+  03:16:28.808
+📁 Frame : MainContainer  -  Edit
+  03:16:28.808  📍 Path: StarterGui.MusicPlayerGUI.PaddingFrame.MainContainer  -  Edit
+  03:16:28.808     ⚙️  Visible: true  -  Edit
+  03:16:28.808     ⚙️  ClipsDescendants: false  -  Edit
+  03:16:28.808     ⚙️  BorderColor3: 0, 0, 0  -  Edit
+  03:16:28.808     ⚙️  LayoutOrder: 0  -  Edit
+  03:16:28.808     ⚙️  BackgroundTransparency: 1  -  Edit
+  03:16:28.808     ⚙️  Rotation: 0  -  Edit
+  03:16:28.808     ⚙️  BackgroundColor3: 85, 0, 0  -  Edit
+  03:16:28.809     ⚙️  Name: MainContainer  -  Edit
+  03:16:28.809     ⚙️  Position: {0, 0}, {0, 0}  -  Edit
+  03:16:28.809     ⚙️  AnchorPoint: 0, 0  -  Edit
+  03:16:28.809     ⚙️  ZIndex: 1  -  Edit
+  03:16:28.809     ⚙️  BorderSizePixel: 0  -  Edit
+  03:16:28.809     ⚙️  Size: {0, 0}, {1, 0}  -  Edit
+  03:16:28.809
+📁 UIAspectRatioConstraint : UIAspectRatioConstraint  -  Edit
+  03:16:28.809  📍 Path: StarterGui.MusicPlayerGUI.PaddingFrame.MainContainer.UIAspectRatioConstraint  -  Edit
+  03:16:28.809     ⚙️  DominantAxis: Width  -  Edit
+  03:16:28.809     ⚙️  AspectRatio: 0.5625  -  Edit
+  03:16:28.809     ⚙️  Name: UIAspectRatioConstraint  -  Edit
+  03:16:28.809     ⚙️  AspectType: FitWithinMaxSize  -  Edit
+  03:16:28.809
+📁 ImageLabel : BackgroundImage  -  Edit
+  03:16:28.809  📍 Path: StarterGui.MusicPlayerGUI.PaddingFrame.MainContainer.BackgroundImage  -  Edit
+  03:16:28.809     ⚙️  LayoutOrder: 0  -  Edit
+  03:16:28.809     ⚙️  ImageTransparency: 0.07000000029802322  -  Edit
+  03:16:28.809     ⚙️  AnchorPoint: 0, 0  -  Edit
+  03:16:28.809     ⚙️  Image: rbxassetid://136464578605531  -  Edit
+  03:16:28.809     ⚙️  TileSize: {1, 0}, {1, 0}  -  Edit
+  03:16:28.809     ⚙️  ZIndex: 1  -  Edit
+  03:16:28.809     ⚙️  BorderSizePixel: 0  -  Edit
+  03:16:28.809     ⚙️  Size: {1, 0}, {1, 0}  -  Edit
+  03:16:28.809     ⚙️  ScaleType: Crop  -  Edit
+  03:16:28.809     ⚙️  ClipsDescendants: false  -  Edit
+  03:16:28.809     ⚙️  BorderColor3: 0, 0, 0  -  Edit
+  03:16:28.809     ⚙️  Rotation: 0  -  Edit
+  03:16:28.809     ⚙️  Visible: true  -  Edit
+  03:16:28.809     ⚙️  Name: BackgroundImage  -  Edit
+  03:16:28.810     ⚙️  Position: {0, 0}, {0, 0}  -  Edit
+  03:16:28.810     ⚙️  SliceScale: 1  -  Edit
+  03:16:28.810     ⚙️  ImageColor3: 255, 255, 255  -  Edit
+  03:16:28.810     ⚙️  BackgroundTransparency: 1  -  Edit
+  03:16:28.810     ⚙️  BackgroundColor3: 255, 255, 255  -  Edit
+  03:16:28.810
+📁 UICorner : BackgroundCorner  -  Edit
+  03:16:28.810  📍 Path: StarterGui.MusicPlayerGUI.PaddingFrame.MainContainer.BackgroundImage.BackgroundCorner  -  Edit
+  03:16:28.810     ⚙️  Name: BackgroundCorner  -  Edit
+  03:16:28.810     ⚙️  CornerRadius: 0, 20  -  Edit
+  03:16:28.810
+📁 UIStroke : BackgroundStroke  -  Edit
+  03:16:28.810  📍 Path: StarterGui.MusicPlayerGUI.PaddingFrame.MainContainer.BackgroundImage.BackgroundStroke  -  Edit
+  03:16:28.810     ⚙️  Thickness: 2  -  Edit
+  03:16:28.810     ⚙️  Transparency: 0.30000001192092896  -  Edit
+  03:16:28.810     ⚙️  Name: BackgroundStroke  -  Edit
+  03:16:28.810     ⚙️  Color: 255, 255, 255  -  Edit
+  03:16:28.810     ⚙️  ZIndex: 1  -  Edit
+  03:16:28.810     ⚙️  ApplyStrokeMode: Border  -  Edit
+  03:16:28.810
+📁 Frame : ContentFrame  -  Edit
+  03:16:28.810  📍 Path: StarterGui.MusicPlayerGUI.PaddingFrame.MainContainer.ContentFrame  -  Edit
+  03:16:28.810     ⚙️  Visible: true  -  Edit
+  03:16:28.810     ⚙️  ClipsDescendants: false  -  Edit
+  03:16:28.810     ⚙️  BorderColor3: 0, 0, 0  -  Edit
+  03:16:28.810     ⚙️  LayoutOrder: 0  -  Edit
+  03:16:28.810     ⚙️  BackgroundTransparency: 1  -  Edit
+  03:16:28.810     ⚙️  Rotation: 0  -  Edit
+  03:16:28.810     ⚙️  BackgroundColor3: 255, 255, 255  -  Edit
+  03:16:28.810     ⚙️  Name: ContentFrame  -  Edit
+  03:16:28.810     ⚙️  Position: {0, 0}, {0, 0}  -  Edit
+  03:16:28.811     ⚙️  AnchorPoint: 0, 0  -  Edit
+  03:16:28.811     ⚙️  ZIndex: 1  -  Edit
+  03:16:28.811     ⚙️  BorderSizePixel: 0  -  Edit
+  03:16:28.811     ⚙️  Size: {1, 0}, {1, 0}  -  Edit
+  03:16:28.811
+📁 Frame : HeaderFrame  -  Edit
+  03:16:28.811  📍 Path: StarterGui.MusicPlayerGUI.PaddingFrame.MainContainer.ContentFrame.HeaderFrame  -  Edit
+  03:16:28.811     ⚙️  Visible: true  -  Edit
+  03:16:28.811     ⚙️  ClipsDescendants: false  -  Edit
+  03:16:28.811     ⚙️  BorderColor3: 0, 0, 0  -  Edit
+  03:16:28.811     ⚙️  LayoutOrder: 1  -  Edit
+  03:16:28.811     ⚙️  BackgroundTransparency: 1  -  Edit
+  03:16:28.811     ⚙️  Rotation: 0  -  Edit
+  03:16:28.811     ⚙️  BackgroundColor3: 255, 255, 255  -  Edit
+  03:16:28.811     ⚙️  Name: HeaderFrame  -  Edit
+  03:16:28.811     ⚙️  Position: {0, 0}, {0, 0}  -  Edit
+  03:16:28.811     ⚙️  AnchorPoint: 0, 0  -  Edit
+  03:16:28.811     ⚙️  ZIndex: 1  -  Edit
+  03:16:28.811     ⚙️  BorderSizePixel: 0  -  Edit
+  03:16:28.811     ⚙️  Size: {0, 0}, {0, 0}  -  Edit
+  03:16:28.811
+📁 TextButton : MenuButton  -  Edit
+  03:16:28.811  📍 Path: StarterGui.MusicPlayerGUI.PaddingFrame.MainContainer.ContentFrame.HeaderFrame.MenuButton  -  Edit
+  03:16:28.811     ⚙️  LayoutOrder: 1  -  Edit
+  03:16:28.811     ⚙️  TextWrapped: true  -  Edit
+  03:16:28.811     ⚙️  AnchorPoint: 0, 0  -  Edit
+  03:16:28.811     ⚙️  ZIndex: 1  -  Edit
+  03:16:28.811     ⚙️  BorderSizePixel: 0  -  Edit
+  03:16:28.812     ⚙️  Size: {0, 0}, {1, 0}  -  Edit
+  03:16:28.812     ⚙️  Visible: true  -  Edit
+  03:16:28.812     ⚙️  TextColor3: 255, 255, 255  -  Edit
+  03:16:28.812     ⚙️  TextXAlignment: Center  -  Edit
+  03:16:28.812     ⚙️  ClipsDescendants: false  -  Edit
+  03:16:28.812     ⚙️  BorderColor3: 0, 0, 0  -  Edit
+  03:16:28.812     ⚙️  Text: ≡  -  Edit
+  03:16:28.812     ⚙️  BackgroundTransparency: 1  -  Edit
+  03:16:28.812     ⚙️  AutoButtonColor: true  -  Edit
+  03:16:28.812     ⚙️  Rotation: 0  -  Edit
+  03:16:28.812     ⚙️  Font: Gotham  -  Edit
+  03:16:28.812     ⚙️  Name: MenuButton  -  Edit
+  03:16:28.812     ⚙️  Position: {0, 0}, {0, 0}  -  Edit
+  03:16:28.812     ⚙️  TextSize: 20  -  Edit
+  03:16:28.812     ⚙️  TextYAlignment: Center  -  Edit
+  03:16:28.812     ⚙️  TextScaled: true  -  Edit
+  03:16:28.812     ⚙️  BackgroundColor3: 255, 255, 255  -  Edit
+  03:16:28.812
+📁 UIListLayout : UIListLayout  -  Edit
+  03:16:28.812  📍 Path: StarterGui.MusicPlayerGUI.PaddingFrame.MainContainer.ContentFrame.HeaderFrame.UIListLayout  -  Edit
+  03:16:28.812     ⚙️  FillDirection: Horizontal  -  Edit
+  03:16:28.812     ⚙️  HorizontalAlignment: Center  -  Edit
+  03:16:28.813     ⚙️  VerticalFlex: None  -  Edit
+  03:16:28.813     ⚙️  VerticalAlignment: Center  -  Edit
+  03:16:28.813     ⚙️  SortOrder: LayoutOrder  -  Edit
+  03:16:28.813     ⚙️  Name: UIListLayout  -  Edit
+  03:16:28.813     ⚙️  Wraps: true  -  Edit
+  03:16:28.813     ⚙️  Padding: 0, 0  -  Edit
+  03:16:28.813     ⚙️  ItemLineAlignment: Automatic  -  Edit
+  03:16:28.813     ⚙️  HorizontalFlex: SpaceBetween  -  Edit
+  03:16:28.813
+📁 TextLabel : TextLabel  -  Edit
+  03:16:28.813  📍 Path: StarterGui.MusicPlayerGUI.PaddingFrame.MainContainer.ContentFrame.HeaderFrame.TextLabel  -  Edit
+  03:16:28.813     ⚙️  LayoutOrder: 2  -  Edit
+  03:16:28.813     ⚙️  TextWrapped: true  -  Edit
+  03:16:28.813     ⚙️  AnchorPoint: 0, 0  -  Edit
+  03:16:28.813     ⚙️  TextTruncate: None  -  Edit
+  03:16:28.814     ⚙️  MaxVisibleGraphemes: -1  -  Edit
+  03:16:28.814     ⚙️  ZIndex: 1  -  Edit
+  03:16:28.814     ⚙️  BorderSizePixel: 0  -  Edit
+  03:16:28.814     ⚙️  Size: {0, 0}, {1, 0}  -  Edit
+  03:16:28.814     ⚙️  TextColor3: 255, 255, 255  -  Edit
+  03:16:28.814     ⚙️  RichText: false  -  Edit
+  03:16:28.814     ⚙️  TextXAlignment: Center  -  Edit
+  03:16:28.814     ⚙️  ClipsDescendants: false  -  Edit
+  03:16:28.814     ⚙️  BorderColor3: 0, 0, 0  -  Edit
+  03:16:28.814     ⚙️  Text: MUSIC PLAYER  -  Edit
+  03:16:28.814     ⚙️  BackgroundTransparency: 1  -  Edit
+  03:16:28.814     ⚙️  Visible: true  -  Edit
+  03:16:28.814     ⚙️  Rotation: 0  -  Edit
+  03:16:28.815     ⚙️  Font: GothamBold  -  Edit
+  03:16:28.815     ⚙️  Name: TextLabel  -  Edit
+  03:16:28.815     ⚙️  Position: {0, 0}, {0, 0}  -  Edit
+  03:16:28.815     ⚙️  TextSize: 20  -  Edit
+  03:16:28.815     ⚙️  TextYAlignment: Center  -  Edit
+  03:16:28.815     ⚙️  TextScaled: true  -  Edit
+  03:16:28.815     ⚙️  BackgroundColor3: 255, 255, 255  -  Edit
+  03:16:28.815
+📁 TextButton : CloseButton  -  Edit
+  03:16:28.815  📍 Path: StarterGui.MusicPlayerGUI.PaddingFrame.MainContainer.ContentFrame.HeaderFrame.CloseButton  -  Edit
+  03:16:28.815     ⚙️  LayoutOrder: 3  -  Edit
+  03:16:28.815     ⚙️  TextWrapped: true  -  Edit
+  03:16:28.815     ⚙️  AnchorPoint: 0, 0  -  Edit
+  03:16:28.815     ⚙️  ZIndex: 1  -  Edit
+  03:16:28.815     ⚙️  BorderSizePixel: 0  -  Edit
+  03:16:28.815     ⚙️  Size: {0, 0}, {0, 0}  -  Edit
+  03:16:28.815     ⚙️  Visible: true  -  Edit
+  03:16:28.815     ⚙️  TextColor3: 255, 255, 255  -  Edit
+  03:16:28.815     ⚙️  TextXAlignment: Center  -  Edit
+  03:16:28.815     ⚙️  ClipsDescendants: false  -  Edit
+  03:16:28.815     ⚙️  BorderColor3: 0, 0, 0  -  Edit
+  03:16:28.816     ⚙️  Text: X  -  Edit
+  03:16:28.816     ⚙️  BackgroundTransparency: 1  -  Edit
+  03:16:28.816     ⚙️  AutoButtonColor: true  -  Edit
+  03:16:28.816     ⚙️  Rotation: 0  -  Edit
+  03:16:28.816     ⚙️  Font: GothamBold  -  Edit
+  03:16:28.816     ⚙️  Name: CloseButton  -  Edit
+  03:16:28.816     ⚙️  Position: {0, 0}, {0, 0}  -  Edit
+  03:16:28.816     ⚙️  TextSize: 25  -  Edit
+  03:16:28.816     ⚙️  TextYAlignment: Center  -  Edit
+  03:16:28.816     ⚙️  TextScaled: true  -  Edit
+  03:16:28.816     ⚙️  BackgroundColor3: 255, 255, 255  -  Edit
+  03:16:28.816
+📁 UIListLayout : UIListLayout  -  Edit
+  03:16:28.816  📍 Path: StarterGui.MusicPlayerGUI.PaddingFrame.MainContainer.ContentFrame.UIListLayout  -  Edit
+  03:16:28.816     ⚙️  FillDirection: Vertical  -  Edit
+  03:16:28.816     ⚙️  HorizontalAlignment: Center  -  Edit
+  03:16:28.816     ⚙️  VerticalFlex: None  -  Edit
+  03:16:28.816     ⚙️  VerticalAlignment: Top  -  Edit
+  03:16:28.816     ⚙️  SortOrder: LayoutOrder  -  Edit
+  03:16:28.816     ⚙️  Name: UIListLayout  -  Edit
+  03:16:28.816     ⚙️  Wraps: false  -  Edit
+  03:16:28.816     ⚙️  Padding: 0, 0  -  Edit
+  03:16:28.817     ⚙️  ItemLineAlignment: Center  -  Edit
+  03:16:28.817     ⚙️  HorizontalFlex: SpaceAround  -  Edit
+  03:16:28.817
+📁 Frame : NowPlayingBox  -  Edit
+  03:16:28.817  📍 Path: StarterGui.MusicPlayerGUI.PaddingFrame.MainContainer.ContentFrame.NowPlayingBox  -  Edit
+  03:16:28.817     ⚙️  Visible: true  -  Edit
+  03:16:28.817     ⚙️  ClipsDescendants: false  -  Edit
+  03:16:28.817     ⚙️  BorderColor3: 0, 0, 0  -  Edit
+  03:16:28.817     ⚙️  LayoutOrder: 2  -  Edit
+  03:16:28.817     ⚙️  BackgroundTransparency: 0.6000000238418579  -  Edit
+  03:16:28.817     ⚙️  Rotation: 0  -  Edit
+  03:16:28.817     ⚙️  BackgroundColor3: 255, 255, 255  -  Edit
+  03:16:28.817     ⚙️  Name: NowPlayingBox  -  Edit
+  03:16:28.817     ⚙️  Position: {0, 0}, {0, 0}  -  Edit
+  03:16:28.817     ⚙️  AnchorPoint: 0, 0  -  Edit
+  03:16:28.817     ⚙️  ZIndex: 1  -  Edit
+  03:16:28.817     ⚙️  BorderSizePixel: 0  -  Edit
+  03:16:28.817     ⚙️  Size: {1, 0}, {0, 0}  -  Edit
+  03:16:28.817
+📁 UICorner : BackgroundCorner  -  Edit
+  03:16:28.817  📍 Path: StarterGui.MusicPlayerGUI.PaddingFrame.MainContainer.ContentFrame.NowPlayingBox.BackgroundCorner  -  Edit
+  03:16:28.817     ⚙️  Name: BackgroundCorner  -  Edit
+  03:16:28.817     ⚙️  CornerRadius: 0, 20  -  Edit
+  03:16:28.817
+📁 UIListLayout : UIListLayout  -  Edit
+  03:16:28.817  📍 Path: StarterGui.MusicPlayerGUI.PaddingFrame.MainContainer.ContentFrame.NowPlayingBox.UIListLayout  -  Edit
+  03:16:28.817     ⚙️  FillDirection: Vertical  -  Edit
+  03:16:28.817     ⚙️  HorizontalAlignment: Center  -  Edit
+  03:16:28.817     ⚙️  VerticalFlex: SpaceEvenly  -  Edit
+  03:16:28.817     ⚙️  VerticalAlignment: Center  -  Edit
+  03:16:28.818     ⚙️  SortOrder: LayoutOrder  -  Edit
+  03:16:28.818     ⚙️  Name: UIListLayout  -  Edit
+  03:16:28.818     ⚙️  Wraps: false  -  Edit
+  03:16:28.818     ⚙️  Padding: 0, 3  -  Edit
+  03:16:28.818     ⚙️  ItemLineAlignment: Center  -  Edit
+  03:16:28.818     ⚙️  HorizontalFlex: None  -  Edit
+  03:16:28.818
+📁 TextLabel : JudulLagu  -  Edit
+  03:16:28.818  📍 Path: StarterGui.MusicPlayerGUI.PaddingFrame.MainContainer.ContentFrame.NowPlayingBox.JudulLagu  -  Edit
+  03:16:28.818     ⚙️  LayoutOrder: 2  -  Edit
+  03:16:28.818     ⚙️  TextWrapped: true  -  Edit
+  03:16:28.818     ⚙️  AnchorPoint: 0, 0  -  Edit
+  03:16:28.818     ⚙️  TextTruncate: None  -  Edit
+  03:16:28.818     ⚙️  MaxVisibleGraphemes: -1  -  Edit
+  03:16:28.818     ⚙️  ZIndex: 1  -  Edit
+  03:16:28.818     ⚙️  BorderSizePixel: 0  -  Edit
+  03:16:28.818     ⚙️  Size: {0, 0}, {0, 0}  -  Edit
+  03:16:28.818     ⚙️  TextColor3: 255, 255, 255  -  Edit
+  03:16:28.818     ⚙️  RichText: false  -  Edit
+  03:16:28.819     ⚙️  TextXAlignment: Center  -  Edit
+  03:16:28.819     ⚙️  ClipsDescendants: false  -  Edit
+  03:16:28.819     ⚙️  BorderColor3: 0, 0, 0  -  Edit
+  03:16:28.819     ⚙️  Text: JUDUL LAGU  -  Edit
+  03:16:28.819     ⚙️  BackgroundTransparency: 1  -  Edit
+  03:16:28.819     ⚙️  Visible: true  -  Edit
+  03:16:28.819     ⚙️  Rotation: 0  -  Edit
+  03:16:28.819     ⚙️  Font: GothamBold  -  Edit
+  03:16:28.819     ⚙️  Name: JudulLagu  -  Edit
+  03:16:28.819     ⚙️  Position: {0, 0}, {0, 0}  -  Edit
+  03:16:28.819     ⚙️  TextSize: 14  -  Edit
+  03:16:28.819     ⚙️  TextYAlignment: Center  -  Edit
+  03:16:28.819     ⚙️  TextScaled: true  -  Edit
+  03:16:28.819     ⚙️  BackgroundColor3: 255, 255, 255  -  Edit
+  03:16:28.820
+📁 Frame : ArtistGenreFrame  -  Edit
+  03:16:28.820  📍 Path: StarterGui.MusicPlayerGUI.PaddingFrame.MainContainer.ContentFrame.NowPlayingBox.ArtistGenreFrame  -  Edit
+  03:16:28.820     ⚙️  Visible: true  -  Edit
+  03:16:28.820     ⚙️  ClipsDescendants: false  -  Edit
+  03:16:28.820     ⚙️  BorderColor3: 0, 0, 0  -  Edit
+  03:16:28.820     ⚙️  LayoutOrder: 3  -  Edit
+  03:16:28.820     ⚙️  BackgroundTransparency: 1  -  Edit
+  03:16:28.820     ⚙️  Rotation: 0  -  Edit
+  03:16:28.820     ⚙️  BackgroundColor3: 255, 255, 255  -  Edit
+  03:16:28.820     ⚙️  Name: ArtistGenreFrame  -  Edit
+  03:16:28.820     ⚙️  Position: {0, 0}, {0, 0}  -  Edit
+  03:16:28.820     ⚙️  AnchorPoint: 0, 0  -  Edit
+  03:16:28.820     ⚙️  ZIndex: 1  -  Edit
+  03:16:28.820     ⚙️  BorderSizePixel: 0  -  Edit
+  03:16:28.820     ⚙️  Size: {0, 0}, {0, 0}  -  Edit
+  03:16:28.820
+📁 UIListLayout : UIListLayout  -  Edit
+  03:16:28.820  📍 Path: StarterGui.MusicPlayerGUI.PaddingFrame.MainContainer.ContentFrame.NowPlayingBox.ArtistGenreFrame.UIListLayout  -  Edit
+  03:16:28.820     ⚙️  FillDirection: Horizontal  -  Edit
+  03:16:28.820     ⚙️  HorizontalAlignment: Center  -  Edit
+  03:16:28.820     ⚙️  VerticalFlex: SpaceEvenly  -  Edit
+  03:16:28.820     ⚙️  VerticalAlignment: Center  -  Edit
+  03:16:28.821     ⚙️  SortOrder: LayoutOrder  -  Edit
+  03:16:28.821     ⚙️  Name: UIListLayout  -  Edit
+  03:16:28.821     ⚙️  Wraps: false  -  Edit
+  03:16:28.821     ⚙️  Padding: 0, 10  -  Edit
+  03:16:28.821     ⚙️  ItemLineAlignment: Automatic  -  Edit
+  03:16:28.821     ⚙️  HorizontalFlex: None  -  Edit
+  03:16:28.821
+📁 TextLabel : ArtistGenreText  -  Edit
+  03:16:28.821  📍 Path: StarterGui.MusicPlayerGUI.PaddingFrame.MainContainer.ContentFrame.NowPlayingBox.ArtistGenreFrame.ArtistGenreText  -  Edit
+  03:16:28.821     ⚙️  LayoutOrder: 1  -  Edit
+  03:16:28.821     ⚙️  TextWrapped: true  -  Edit
+  03:16:28.821     ⚙️  AnchorPoint: 0, 0  -  Edit
+  03:16:28.821     ⚙️  TextTruncate: None  -  Edit
+  03:16:28.821     ⚙️  MaxVisibleGraphemes: -1  -  Edit
+  03:16:28.821     ⚙️  ZIndex: 1  -  Edit
+  03:16:28.821     ⚙️  BorderSizePixel: 0  -  Edit
+  03:16:28.821     ⚙️  Size: {1, 0}, {1, 0}  -  Edit
+  03:16:28.821     ⚙️  TextColor3: 255, 255, 255  -  Edit
+  03:16:28.821     ⚙️  RichText: false  -  Edit
+  03:16:28.821     ⚙️  TextXAlignment: Center  -  Edit
+  03:16:28.821     ⚙️  ClipsDescendants: false  -  Edit
+  03:16:28.821     ⚙️  BorderColor3: 0, 0, 0  -  Edit
+  03:16:28.821     ⚙️  Text: Artis - Genre  -  Edit
+  03:16:28.821     ⚙️  BackgroundTransparency: 1  -  Edit
+  03:16:28.821     ⚙️  Visible: true  -  Edit
+  03:16:28.821     ⚙️  Rotation: 0  -  Edit
+  03:16:28.821     ⚙️  Font: GothamBold  -  Edit
+  03:16:28.822     ⚙️  Name: ArtistGenreText  -  Edit
+  03:16:28.822     ⚙️  Position: {0, 0}, {0, 0}  -  Edit
+  03:16:28.822     ⚙️  TextSize: 12  -  Edit
+  03:16:28.822     ⚙️  TextYAlignment: Center  -  Edit
+  03:16:28.822     ⚙️  TextScaled: true  -  Edit
+  03:16:28.822     ⚙️  BackgroundColor3: 255, 255, 255  -  Edit
+  03:16:28.822
+📁 UIPadding : UIPadding  -  Edit
+  03:16:28.822  📍 Path: StarterGui.MusicPlayerGUI.PaddingFrame.MainContainer.ContentFrame.NowPlayingBox.UIPadding  -  Edit
+  03:16:28.822     ⚙️  PaddingTop: 0, 10  -  Edit
+  03:16:28.822     ⚙️  Name: UIPadding  -  Edit
+  03:16:28.822     ⚙️  PaddingBottom: 0, 10  -  Edit
+  03:16:28.822     ⚙️  PaddingLeft: 0, 10  -  Edit
+  03:16:28.822     ⚙️  PaddingRight: 0, 10  -  Edit
+  03:16:28.822
+📁 Frame : VinylFrame  -  Edit
+  03:16:28.822  📍 Path: StarterGui.MusicPlayerGUI.PaddingFrame.MainContainer.ContentFrame.NowPlayingBox.VinylFrame  -  Edit
+  03:16:28.822     ⚙️  Visible: true  -  Edit
+  03:16:28.822     ⚙️  ClipsDescendants: false  -  Edit
+  03:16:28.822     ⚙️  BorderColor3: 0, 0, 0  -  Edit
+  03:16:28.822     ⚙️  LayoutOrder: 0  -  Edit
+  03:16:28.822     ⚙️  BackgroundTransparency: 1  -  Edit
+  03:16:28.822     ⚙️  Rotation: 0  -  Edit
+  03:16:28.822     ⚙️  BackgroundColor3: 255, 255, 255  -  Edit
+  03:16:28.822     ⚙️  Name: VinylFrame  -  Edit
+  03:16:28.822     ⚙️  Position: {0, 0}, {0, 0}  -  Edit
+  03:16:28.822     ⚙️  AnchorPoint: 0, 0  -  Edit
+  03:16:28.822     ⚙️  ZIndex: 1  -  Edit
+  03:16:28.822     ⚙️  BorderSizePixel: 0  -  Edit
+  03:16:28.822     ⚙️  Size: {0, 0}, {0, 0}  -  Edit
+  03:16:28.822
+📁 UICorner : UICorner  -  Edit
+  03:16:28.822  📍 Path: StarterGui.MusicPlayerGUI.PaddingFrame.MainContainer.ContentFrame.NowPlayingBox.VinylFrame.UICorner  -  Edit
+  03:16:28.822     ⚙️  Name: UICorner  -  Edit
+  03:16:28.823     ⚙️  CornerRadius: 1, 0  -  Edit
+  03:16:28.823
+📁 ImageLabel : VinylArt  -  Edit
+  03:16:28.823  📍 Path: StarterGui.MusicPlayerGUI.PaddingFrame.MainContainer.ContentFrame.NowPlayingBox.VinylFrame.VinylArt  -  Edit
+  03:16:28.823     ⚙️  LayoutOrder: 1  -  Edit
+  03:16:28.823     ⚙️  ImageTransparency: 0  -  Edit
+  03:16:28.823     ⚙️  AnchorPoint: 0, 0  -  Edit
+  03:16:28.823     ⚙️  Image: rbxassetid://86002587869819  -  Edit
+  03:16:28.823     ⚙️  TileSize: {1, 0}, {1, 0}  -  Edit
+  03:16:28.823     ⚙️  ZIndex: 1  -  Edit
+  03:16:28.823     ⚙️  BorderSizePixel: 0  -  Edit
+  03:16:28.823     ⚙️  Size: {1, 0}, {1, 0}  -  Edit
+  03:16:28.823     ⚙️  ScaleType: Stretch  -  Edit
+  03:16:28.823     ⚙️  ClipsDescendants: false  -  Edit
+  03:16:28.823     ⚙️  BorderColor3: 0, 0, 0  -  Edit
+  03:16:28.823     ⚙️  Rotation: -180  -  Edit
+  03:16:28.823     ⚙️  Visible: true  -  Edit
+  03:16:28.823     ⚙️  Name: VinylArt  -  Edit
+  03:16:28.823     ⚙️  Position: {0, 0}, {0, 0}  -  Edit
+  03:16:28.823     ⚙️  SliceScale: 1  -  Edit
+  03:16:28.823     ⚙️  ImageColor3: 255, 255, 255  -  Edit
+  03:16:28.823     ⚙️  BackgroundTransparency: 1  -  Edit
+  03:16:28.823     ⚙️  BackgroundColor3: 255, 255, 255  -  Edit
+  03:16:28.823
+📁 UIAspectRatioConstraint : UIAspectRatioConstraint  -  Edit
+  03:16:28.823  📍 Path: StarterGui.MusicPlayerGUI.PaddingFrame.MainContainer.ContentFrame.NowPlayingBox.VinylFrame.VinylArt.UIAspectRatioConstraint  -  Edit
+  03:16:28.823     ⚙️  DominantAxis: Width  -  Edit
+  03:16:28.823     ⚙️  AspectRatio: 1  -  Edit
+  03:16:28.823     ⚙️  Name: UIAspectRatioConstraint  -  Edit
+  03:16:28.823     ⚙️  AspectType: FitWithinMaxSize  -  Edit
+  03:16:28.823
+📁 UIAspectRatioConstraint : UIAspectRatioConstraint  -  Edit
+  03:16:28.823  📍 Path: StarterGui.MusicPlayerGUI.PaddingFrame.MainContainer.ContentFrame.NowPlayingBox.VinylFrame.UIAspectRatioConstraint  -  Edit
+  03:16:28.823     ⚙️  DominantAxis: Width  -  Edit
+  03:16:28.823     ⚙️  AspectRatio: 1  -  Edit
+  03:16:28.823     ⚙️  Name: UIAspectRatioConstraint  -  Edit
+  03:16:28.823     ⚙️  AspectType: FitWithinMaxSize  -  Edit
+  03:16:28.823
+📁 Frame : PlaylistFrame  -  Edit
+  03:16:28.823  📍 Path: StarterGui.MusicPlayerGUI.PaddingFrame.MainContainer.ContentFrame.PlaylistFrame  -  Edit
+  03:16:28.823     ⚙️  Visible: true  -  Edit
+  03:16:28.823     ⚙️  ClipsDescendants: false  -  Edit
+  03:16:28.823     ⚙️  BorderColor3: 0, 0, 0  -  Edit
+  03:16:28.824     ⚙️  LayoutOrder: 3  -  Edit
+  03:16:28.824     ⚙️  BackgroundTransparency: 1  -  Edit
+  03:16:28.824     ⚙️  Rotation: 0  -  Edit
+  03:16:28.824     ⚙️  BackgroundColor3: 255, 255, 255  -  Edit
+  03:16:28.824     ⚙️  Name: PlaylistFrame  -  Edit
+  03:16:28.824     ⚙️  Position: {0, 0}, {0, 0}  -  Edit
+  03:16:28.824     ⚙️  AnchorPoint: 0, 0  -  Edit
+  03:16:28.824     ⚙️  ZIndex: 1  -  Edit
+  03:16:28.824     ⚙️  BorderSizePixel: 0  -  Edit
+  03:16:28.824     ⚙️  Size: {1, 0}, {0, 0}  -  Edit
+  03:16:28.824
+📁 ScrollingFrame : PlaylistScroll  -  Edit
+  03:16:28.824  📍 Path: StarterGui.MusicPlayerGUI.PaddingFrame.MainContainer.ContentFrame.PlaylistFrame.PlaylistScroll  -  Edit
+  03:16:28.824     ⚙️  LayoutOrder: 0  -  Edit
+  03:16:28.824     ⚙️  AutomaticCanvasSize: Y  -  Edit
+  03:16:28.824     ⚙️  VerticalScrollBarPosition: Right  -  Edit
+  03:16:28.824     ⚙️  AnchorPoint: 0, 0  -  Edit
+  03:16:28.824     ⚙️  ScrollingDirection: XY  -  Edit
+  03:16:28.824     ⚙️  ZIndex: 1  -  Edit
+  03:16:28.824     ⚙️  BorderSizePixel: 0  -  Edit
+  03:16:28.824     ⚙️  Size: {1, 0}, {1, 0}  -  Edit
+  03:16:28.824     ⚙️  ScrollBarImageColor3: 255, 255, 255  -  Edit
+  03:16:28.824     ⚙️  MidImage: rbxasset://textures/ui/Scroll/scroll-middle.png  -  Edit
+  03:16:28.824     ⚙️  ClipsDescendants: true  -  Edit
+  03:16:28.824     ⚙️  BorderColor3: 0, 0, 0  -  Edit
+  03:16:28.824     ⚙️  ScrollBarThickness: 3  -  Edit
+  03:16:28.824     ⚙️  TopImage: rbxasset://textures/ui/Scroll/scroll-top.png  -  Edit
+  03:16:28.824     ⚙️  CanvasSize: {0, 0}, {0, 300}  -  Edit
+  03:16:28.825     ⚙️  Rotation: 0  -  Edit
+  03:16:28.825     ⚙️  ScrollBarImageTransparency: 0  -  Edit
+  03:16:28.825     ⚙️  Name: PlaylistScroll  -  Edit
+  03:16:28.825     ⚙️  Position: {0, 0}, {0, 0}  -  Edit
+  03:16:28.825     ⚙️  Visible: true  -  Edit
+  03:16:28.825     ⚙️  BottomImage: rbxasset://textures/ui/Scroll/scroll-bottom.png  -  Edit
+  03:16:28.825     ⚙️  BackgroundTransparency: 1  -  Edit
+  03:16:28.825     ⚙️  BackgroundColor3: 255, 255, 255  -  Edit
+  03:16:28.825
+📁 UIListLayout : UIListLayout  -  Edit
+  03:16:28.825  📍 Path: StarterGui.MusicPlayerGUI.PaddingFrame.MainContainer.ContentFrame.PlaylistFrame.PlaylistScroll.UIListLayout  -  Edit
+  03:16:28.825     ⚙️  FillDirection: Vertical  -  Edit
+  03:16:28.825     ⚙️  HorizontalAlignment: Center  -  Edit
+  03:16:28.825     ⚙️  VerticalFlex: None  -  Edit
+  03:16:28.825     ⚙️  VerticalAlignment: Top  -  Edit
+  03:16:28.825     ⚙️  SortOrder: LayoutOrder  -  Edit
+  03:16:28.825     ⚙️  Name: UIListLayout  -  Edit
+  03:16:28.825     ⚙️  Wraps: false  -  Edit
+  03:16:28.825     ⚙️  Padding: 0, 5  -  Edit
+  03:16:28.825     ⚙️  ItemLineAlignment: Automatic  -  Edit
+  03:16:28.825     ⚙️  HorizontalFlex: Fill  -  Edit
+  03:16:28.825
+📁 Frame : PlaylistItemTemplate  -  Edit
+  03:16:28.825  📍 Path: StarterGui.MusicPlayerGUI.PaddingFrame.MainContainer.ContentFrame.PlaylistFrame.PlaylistScroll.PlaylistItemTemplate  -  Edit
+  03:16:28.825     ⚙️  Visible: true  -  Edit
+  03:16:28.825     ⚙️  ClipsDescendants: false  -  Edit
+  03:16:28.825     ⚙️  BorderColor3: 0, 0, 0  -  Edit
+  03:16:28.825     ⚙️  LayoutOrder: 0  -  Edit
+  03:16:28.825     ⚙️  BackgroundTransparency: 0.5  -  Edit
+  03:16:28.826     ⚙️  Rotation: 0  -  Edit
+  03:16:28.826     ⚙️  BackgroundColor3: 255, 255, 255  -  Edit
+  03:16:28.826     ⚙️  Name: PlaylistItemTemplate  -  Edit
+  03:16:28.826     ⚙️  Position: {0, 0}, {0, 0}  -  Edit
+  03:16:28.826     ⚙️  AnchorPoint: 0, 0  -  Edit
+  03:16:28.826     ⚙️  ZIndex: 1  -  Edit
+  03:16:28.826     ⚙️  BorderSizePixel: 0  -  Edit
+  03:16:28.826     ⚙️  Size: {1, 0}, {0, 0}  -  Edit
+  03:16:28.826
+📁 UIPadding : UIPadding  -  Edit
+  03:16:28.826  📍 Path: StarterGui.MusicPlayerGUI.PaddingFrame.MainContainer.ContentFrame.PlaylistFrame.PlaylistScroll.PlaylistItemTemplate.UIPadding  -  Edit
+  03:16:28.826     ⚙️  PaddingTop: 0, 0  -  Edit
+  03:16:28.826     ⚙️  Name: UIPadding  -  Edit
+  03:16:28.826     ⚙️  PaddingBottom: 0, 0  -  Edit
+  03:16:28.826     ⚙️  PaddingLeft: 0, 10  -  Edit
+  03:16:28.826     ⚙️  PaddingRight: 0, 10  -  Edit
+  03:16:28.826
+📁 UICorner : UICorner  -  Edit
+  03:16:28.826  📍 Path: StarterGui.MusicPlayerGUI.PaddingFrame.MainContainer.ContentFrame.PlaylistFrame.PlaylistScroll.PlaylistItemTemplate.UICorner  -  Edit
+  03:16:28.826     ⚙️  Name: UICorner  -  Edit
+  03:16:28.826     ⚙️  CornerRadius: 0, 10  -  Edit
+  03:16:28.826
+📁 UIListLayout : UIListLayout  -  Edit
+  03:16:28.826  📍 Path: StarterGui.MusicPlayerGUI.PaddingFrame.MainContainer.ContentFrame.PlaylistFrame.PlaylistScroll.PlaylistItemTemplate.UIListLayout  -  Edit
+  03:16:28.826     ⚙️  FillDirection: Horizontal  -  Edit
+  03:16:28.826     ⚙️  HorizontalAlignment: Center  -  Edit
+  03:16:28.826     ⚙️  VerticalFlex: None  -  Edit
+  03:16:28.827     ⚙️  VerticalAlignment: Center  -  Edit
+  03:16:28.827     ⚙️  SortOrder: LayoutOrder  -  Edit
+  03:16:28.827     ⚙️  Name: UIListLayout  -  Edit
+  03:16:28.827     ⚙️  Wraps: false  -  Edit
+  03:16:28.827     ⚙️  Padding: 0, 0  -  Edit
+  03:16:28.827     ⚙️  ItemLineAlignment: Automatic  -  Edit
+  03:16:28.827     ⚙️  HorizontalFlex: SpaceBetween  -  Edit
+  03:16:28.827
+📁 TextLabel : SongInfo  -  Edit
+  03:16:28.827  📍 Path: StarterGui.MusicPlayerGUI.PaddingFrame.MainContainer.ContentFrame.PlaylistFrame.PlaylistScroll.PlaylistItemTemplate.SongInfo  -  Edit
+  03:16:28.827     ⚙️  LayoutOrder: 2  -  Edit
+  03:16:28.827     ⚙️  TextWrapped: true  -  Edit
+  03:16:28.827     ⚙️  AnchorPoint: 0, 0  -  Edit
+  03:16:28.827     ⚙️  TextTruncate: AtEnd  -  Edit
+  03:16:28.827     ⚙️  MaxVisibleGraphemes: -1  -  Edit
+  03:16:28.827     ⚙️  ZIndex: 1  -  Edit
+  03:16:28.827     ⚙️  BorderSizePixel: 0  -  Edit
+  03:16:28.827     ⚙️  Size: {0, 0}, {0, 0}  -  Edit
+  03:16:28.827     ⚙️  TextColor3: 255, 255, 255  -  Edit
+  03:16:28.827     ⚙️  RichText: false  -  Edit
+  03:16:28.828     ⚙️  TextXAlignment: Left  -  Edit
+  03:16:28.828     ⚙️  ClipsDescendants: false  -  Edit
+  03:16:28.828     ⚙️  BorderColor3: 0, 0, 0  -  Edit
+  03:16:28.828     ⚙️  Text: Judul - Artis - Genre  -  Edit
+  03:16:28.828     ⚙️  BackgroundTransparency: 1  -  Edit
+  03:16:28.828     ⚙️  Visible: true  -  Edit
+  03:16:28.828     ⚙️  Rotation: 0  -  Edit
+  03:16:28.828     ⚙️  Font: Unknown  -  Edit
+  03:16:28.828     ⚙️  Name: SongInfo  -  Edit
+  03:16:28.828     ⚙️  Position: {0, 0}, {0, 0}  -  Edit
+  03:16:28.828     ⚙️  TextSize: 16  -  Edit
+  03:16:28.828     ⚙️  TextYAlignment: Center  -  Edit
+  03:16:28.828     ⚙️  TextScaled: true  -  Edit
+  03:16:28.828     ⚙️  BackgroundColor3: 255, 255, 255  -  Edit
+  03:16:28.828
+📁 ImageButton : PlayIcon  -  Edit
+  03:16:28.828  📍 Path: StarterGui.MusicPlayerGUI.PaddingFrame.MainContainer.ContentFrame.PlaylistFrame.PlaylistScroll.PlaylistItemTemplate.PlayIcon  -  Edit
+  03:16:28.828     ⚙️  LayoutOrder: 1  -  Edit
+  03:16:28.828     ⚙️  ImageTransparency: 0  -  Edit
+  03:16:28.828     ⚙️  AnchorPoint: 0, 0  -  Edit
+  03:16:28.828     ⚙️  Image: rbxassetid://89914489526642  -  Edit
+  03:16:28.828     ⚙️  TileSize: {1, 0}, {1, 0}  -  Edit
+  03:16:28.828     ⚙️  ZIndex: 1  -  Edit
+  03:16:28.828     ⚙️  BorderSizePixel: 1  -  Edit
+  03:16:28.828     ⚙️  Size: {0, 0}, {0, 0}  -  Edit
+  03:16:28.828     ⚙️  ScaleType: Fit  -  Edit
+  03:16:28.828     ⚙️  ClipsDescendants: false  -  Edit
+  03:16:28.828     ⚙️  BorderColor3: 27, 42, 53  -  Edit
+  03:16:28.828     ⚙️  AutoButtonColor: false  -  Edit
+  03:16:28.828     ⚙️  Rotation: 0  -  Edit
+  03:16:28.828     ⚙️  Visible: true  -  Edit
+  03:16:28.829     ⚙️  Name: PlayIcon  -  Edit
+  03:16:28.829     ⚙️  Position: {0, 0}, {0, 0}  -  Edit
+  03:16:28.829     ⚙️  SliceScale: 1  -  Edit
+  03:16:28.829     ⚙️  ImageColor3: 255, 255, 255  -  Edit
+  03:16:28.829     ⚙️  BackgroundTransparency: 1  -  Edit
+  03:16:28.829     ⚙️  BackgroundColor3: 163, 162, 165  -  Edit
+  03:16:28.829
+📁 ImageButton : MenuIcon  -  Edit
+  03:16:28.829  📍 Path: StarterGui.MusicPlayerGUI.PaddingFrame.MainContainer.ContentFrame.PlaylistFrame.PlaylistScroll.PlaylistItemTemplate.MenuIcon  -  Edit
+  03:16:28.829     ⚙️  LayoutOrder: 3  -  Edit
+  03:16:28.829     ⚙️  ImageTransparency: 0  -  Edit
+  03:16:28.829     ⚙️  AnchorPoint: 0, 0  -  Edit
+  03:16:28.829     ⚙️  Image: rbxassetid://130010482065235  -  Edit
+  03:16:28.829     ⚙️  TileSize: {1, 0}, {1, 0}  -  Edit
+  03:16:28.829     ⚙️  ZIndex: 1  -  Edit
+  03:16:28.829     ⚙️  BorderSizePixel: 1  -  Edit
+  03:16:28.829     ⚙️  Size: {0, 0}, {0, 0}  -  Edit
+  03:16:28.829     ⚙️  ScaleType: Fit  -  Edit
+  03:16:28.829     ⚙️  ClipsDescendants: false  -  Edit
+  03:16:28.829     ⚙️  BorderColor3: 27, 42, 53  -  Edit
+  03:16:28.829     ⚙️  AutoButtonColor: false  -  Edit
+  03:16:28.829     ⚙️  Rotation: 0  -  Edit
+  03:16:28.829     ⚙️  Visible: true  -  Edit
+  03:16:28.829     ⚙️  Name: MenuIcon  -  Edit
+  03:16:28.829     ⚙️  Position: {0, 0}, {0, 0}  -  Edit
+  03:16:28.830     ⚙️  SliceScale: 1  -  Edit
+  03:16:28.830     ⚙️  ImageColor3: 255, 255, 255  -  Edit
+  03:16:28.830     ⚙️  BackgroundTransparency: 1  -  Edit
+  03:16:28.830     ⚙️  BackgroundColor3: 163, 162, 165  -  Edit
+  03:16:28.830
+📁 UIPadding : UIPadding  -  Edit
+  03:16:28.830  📍 Path: StarterGui.MusicPlayerGUI.PaddingFrame.MainContainer.ContentFrame.PlaylistFrame.PlaylistScroll.UIPadding  -  Edit
+  03:16:28.830     ⚙️  PaddingTop: 0, 0  -  Edit
+  03:16:28.830     ⚙️  Name: UIPadding  -  Edit
+  03:16:28.830     ⚙️  PaddingBottom: 0, 0  -  Edit
+  03:16:28.830     ⚙️  PaddingLeft: 0, 5  -  Edit
+  03:16:28.830     ⚙️  PaddingRight: 0, 5  -  Edit
+  03:16:28.830
+📁 Frame : MediaButtonFrame  -  Edit
+  03:16:28.830  📍 Path: StarterGui.MusicPlayerGUI.PaddingFrame.MainContainer.ContentFrame.MediaButtonFrame  -  Edit
+  03:16:28.830     ⚙️  Visible: true  -  Edit
+  03:16:28.830     ⚙️  ClipsDescendants: false  -  Edit
+  03:16:28.830     ⚙️  BorderColor3: 0, 0, 0  -  Edit
+  03:16:28.830     ⚙️  LayoutOrder: 4  -  Edit
+  03:16:28.830     ⚙️  BackgroundTransparency: 1  -  Edit
+  03:16:28.830     ⚙️  Rotation: 0  -  Edit
+  03:16:28.830     ⚙️  BackgroundColor3: 255, 255, 255  -  Edit
+  03:16:28.830     ⚙️  Name: MediaButtonFrame  -  Edit
+  03:16:28.830     ⚙️  Position: {0, 0}, {0, 0}  -  Edit
+  03:16:28.830     ⚙️  AnchorPoint: 0, 0  -  Edit
+  03:16:28.830     ⚙️  ZIndex: 1  -  Edit
+  03:16:28.830     ⚙️  BorderSizePixel: 0  -  Edit
+  03:16:28.830     ⚙️  Size: {1, 0}, {0, 0}  -  Edit
+  03:16:28.830
+📁 Frame : ControlGroup  -  Edit
+  03:16:28.830  📍 Path: StarterGui.MusicPlayerGUI.PaddingFrame.MainContainer.ContentFrame.MediaButtonFrame.ControlGroup  -  Edit
+  03:16:28.830     ⚙️  Visible: true  -  Edit
+  03:16:28.831     ⚙️  ClipsDescendants: false  -  Edit
+  03:16:28.831     ⚙️  BorderColor3: 0, 0, 0  -  Edit
+  03:16:28.831     ⚙️  LayoutOrder: 1  -  Edit
+  03:16:28.831     ⚙️  BackgroundTransparency: 1  -  Edit
+  03:16:28.831     ⚙️  Rotation: 0  -  Edit
+  03:16:28.831     ⚙️  BackgroundColor3: 0, 255, 255  -  Edit
+  03:16:28.831     ⚙️  Name: ControlGroup  -  Edit
+  03:16:28.831     ⚙️  Position: {0, 0}, {0, 0}  -  Edit
+  03:16:28.831     ⚙️  AnchorPoint: 0, 0  -  Edit
+  03:16:28.831     ⚙️  ZIndex: 1  -  Edit
+  03:16:28.831     ⚙️  BorderSizePixel: 0  -  Edit
+  03:16:28.831     ⚙️  Size: {0, 0}, {0, 0}  -  Edit
+  03:16:28.831
+📁 UIListLayout : UIListLayout  -  Edit
+  03:16:28.831  📍 Path: StarterGui.MusicPlayerGUI.PaddingFrame.MainContainer.ContentFrame.MediaButtonFrame.ControlGroup.UIListLayout  -  Edit
+  03:16:28.831     ⚙️  FillDirection: Horizontal  -  Edit
+  03:16:28.831     ⚙️  HorizontalAlignment: Center  -  Edit
+  03:16:28.831     ⚙️  VerticalFlex: None  -  Edit
+  03:16:28.831     ⚙️  VerticalAlignment: Center  -  Edit
+  03:16:28.831     ⚙️  SortOrder: LayoutOrder  -  Edit
+  03:16:28.831     ⚙️  Name: UIListLayout  -  Edit
+  03:16:28.831     ⚙️  Wraps: false  -  Edit
+  03:16:28.831     ⚙️  Padding: 0, 0  -  Edit
+  03:16:28.831     ⚙️  ItemLineAlignment: Automatic  -  Edit
+  03:16:28.831     ⚙️  HorizontalFlex: SpaceEvenly  -  Edit
+  03:16:28.831
+📁 ImageButton : PlayButton  -  Edit
+  03:16:28.831  📍 Path: StarterGui.MusicPlayerGUI.PaddingFrame.MainContainer.ContentFrame.MediaButtonFrame.ControlGroup.PlayButton  -  Edit
+  03:16:28.831     ⚙️  LayoutOrder: 2  -  Edit
+  03:16:28.831     ⚙️  ImageTransparency: 0  -  Edit
+  03:16:28.831     ⚙️  AnchorPoint: 0, 0  -  Edit
+  03:16:28.831     ⚙️  Image: rbxassetid://89914489526642  -  Edit
+  03:16:28.831     ⚙️  TileSize: {1, 0}, {1, 0}  -  Edit
+  03:16:28.832     ⚙️  ZIndex: 1  -  Edit
+  03:16:28.832     ⚙️  BorderSizePixel: 1  -  Edit
+  03:16:28.832     ⚙️  Size: {0, 0}, {0, 0}  -  Edit
+  03:16:28.832     ⚙️  ScaleType: Fit  -  Edit
+  03:16:28.832     ⚙️  ClipsDescendants: false  -  Edit
+  03:16:28.832     ⚙️  BorderColor3: 27, 42, 53  -  Edit
+  03:16:28.832     ⚙️  AutoButtonColor: false  -  Edit
+  03:16:28.832     ⚙️  Rotation: 0  -  Edit
+  03:16:28.832     ⚙️  Visible: true  -  Edit
+  03:16:28.832     ⚙️  Name: PlayButton  -  Edit
+  03:16:28.832     ⚙️  Position: {0, 0}, {0, 0}  -  Edit
+  03:16:28.832     ⚙️  SliceScale: 1  -  Edit
+  03:16:28.832     ⚙️  ImageColor3: 255, 255, 255  -  Edit
+  03:16:28.832     ⚙️  BackgroundTransparency: 1  -  Edit
+  03:16:28.832     ⚙️  BackgroundColor3: 163, 162, 165  -  Edit
+  03:16:28.832
+📁 ImageButton : PreviousButton  -  Edit
+  03:16:28.832  📍 Path: StarterGui.MusicPlayerGUI.PaddingFrame.MainContainer.ContentFrame.MediaButtonFrame.ControlGroup.PreviousButton  -  Edit
+  03:16:28.832     ⚙️  LayoutOrder: 1  -  Edit
+  03:16:28.832     ⚙️  ImageTransparency: 0  -  Edit
+  03:16:28.832     ⚙️  AnchorPoint: 0, 0  -  Edit
+  03:16:28.832     ⚙️  Image: rbxassetid://129306585952986  -  Edit
+  03:16:28.832     ⚙️  TileSize: {1, 0}, {1, 0}  -  Edit
+  03:16:28.832     ⚙️  ZIndex: 1  -  Edit
+  03:16:28.832     ⚙️  BorderSizePixel: 1  -  Edit
+  03:16:28.832     ⚙️  Size: {0, 0}, {0, 0}  -  Edit
+  03:16:28.833     ⚙️  ScaleType: Fit  -  Edit
+  03:16:28.833     ⚙️  ClipsDescendants: false  -  Edit
+  03:16:28.833     ⚙️  BorderColor3: 27, 42, 53  -  Edit
+  03:16:28.833     ⚙️  AutoButtonColor: false  -  Edit
+  03:16:28.833     ⚙️  Rotation: 0  -  Edit
+  03:16:28.833     ⚙️  Visible: true  -  Edit
+  03:16:28.833     ⚙️  Name: PreviousButton  -  Edit
+  03:16:28.833     ⚙️  Position: {0, 0}, {0, 0}  -  Edit
+  03:16:28.833     ⚙️  SliceScale: 1  -  Edit
+  03:16:28.833     ⚙️  ImageColor3: 255, 255, 255  -  Edit
+  03:16:28.833     ⚙️  BackgroundTransparency: 1  -  Edit
+  03:16:28.833     ⚙️  BackgroundColor3: 163, 162, 165  -  Edit
+  03:16:28.833
+📁 ImageButton : NextButton  -  Edit
+  03:16:28.833  📍 Path: StarterGui.MusicPlayerGUI.PaddingFrame.MainContainer.ContentFrame.MediaButtonFrame.ControlGroup.NextButton  -  Edit
+  03:16:28.833     ⚙️  LayoutOrder: 3  -  Edit
+  03:16:28.833     ⚙️  ImageTransparency: 0  -  Edit
+  03:16:28.833     ⚙️  AnchorPoint: 0, 0  -  Edit
+  03:16:28.833     ⚙️  Image: rbxassetid://100389894024485  -  Edit
+  03:16:28.833     ⚙️  TileSize: {1, 0}, {1, 0}  -  Edit
+  03:16:28.833     ⚙️  ZIndex: 1  -  Edit
+  03:16:28.833     ⚙️  BorderSizePixel: 1  -  Edit
+  03:16:28.833     ⚙️  Size: {0, 0}, {0, 0}  -  Edit
+  03:16:28.833     ⚙️  ScaleType: Fit  -  Edit
+  03:16:28.833     ⚙️  ClipsDescendants: false  -  Edit
+  03:16:28.833     ⚙️  BorderColor3: 27, 42, 53  -  Edit
+  03:16:28.833     ⚙️  AutoButtonColor: false  -  Edit
+  03:16:28.834     ⚙️  Rotation: 0  -  Edit
+  03:16:28.834     ⚙️  Visible: true  -  Edit
+  03:16:28.834     ⚙️  Name: NextButton  -  Edit
+  03:16:28.834     ⚙️  Position: {0, 0}, {0, 0}  -  Edit
+  03:16:28.834     ⚙️  SliceScale: 1  -  Edit
+  03:16:28.834     ⚙️  ImageColor3: 255, 255, 255  -  Edit
+  03:16:28.834     ⚙️  BackgroundTransparency: 1  -  Edit
+  03:16:28.834     ⚙️  BackgroundColor3: 163, 162, 165  -  Edit
+  03:16:28.834
+📁 UIListLayout : UIListLayout  -  Edit
+  03:16:28.834  📍 Path: StarterGui.MusicPlayerGUI.PaddingFrame.MainContainer.ContentFrame.MediaButtonFrame.UIListLayout  -  Edit
+  03:16:28.834     ⚙️  FillDirection: Vertical  -  Edit
+  03:16:28.834     ⚙️  HorizontalAlignment: Center  -  Edit
+  03:16:28.834     ⚙️  VerticalFlex: SpaceAround  -  Edit
+  03:16:28.834     ⚙️  VerticalAlignment: Center  -  Edit
+  03:16:28.834     ⚙️  SortOrder: LayoutOrder  -  Edit
+  03:16:28.834     ⚙️  Name: UIListLayout  -  Edit
+  03:16:28.834     ⚙️  Wraps: false  -  Edit
+  03:16:28.834     ⚙️  Padding: 0, 0  -  Edit
+  03:16:28.834     ⚙️  ItemLineAlignment: Automatic  -  Edit
+  03:16:28.834     ⚙️  HorizontalFlex: None  -  Edit
+  03:16:28.834
+📁 Frame : BottomGroup  -  Edit
+  03:16:28.834  📍 Path: StarterGui.MusicPlayerGUI.PaddingFrame.MainContainer.ContentFrame.MediaButtonFrame.BottomGroup  -  Edit
+  03:16:28.834     ⚙️  Visible: true  -  Edit
+  03:16:28.834     ⚙️  ClipsDescendants: false  -  Edit
+  03:16:28.834     ⚙️  BorderColor3: 0, 0, 0  -  Edit
+  03:16:28.834     ⚙️  LayoutOrder: 2  -  Edit
+  03:16:28.834     ⚙️  BackgroundTransparency: 1  -  Edit
+  03:16:28.835     ⚙️  Rotation: 0  -  Edit
+  03:16:28.835     ⚙️  BackgroundColor3: 255, 255, 255  -  Edit
+  03:16:28.835     ⚙️  Name: BottomGroup  -  Edit
+  03:16:28.835     ⚙️  Position: {0, 0}, {0, 0}  -  Edit
+  03:16:28.835     ⚙️  AnchorPoint: 0, 0  -  Edit
+  03:16:28.835     ⚙️  ZIndex: 1  -  Edit
+  03:16:28.835     ⚙️  BorderSizePixel: 0  -  Edit
+  03:16:28.835     ⚙️  Size: {1, 0}, {0, 0}  -  Edit
+  03:16:28.835
+📁 UIListLayout : UIListLayout  -  Edit
+  03:16:28.835  📍 Path: StarterGui.MusicPlayerGUI.PaddingFrame.MainContainer.ContentFrame.MediaButtonFrame.BottomGroup.UIListLayout  -  Edit
+  03:16:28.835     ⚙️  FillDirection: Horizontal  -  Edit
+  03:16:28.835     ⚙️  HorizontalAlignment: Center  -  Edit
+  03:16:28.835     ⚙️  VerticalFlex: None  -  Edit
+  03:16:28.835     ⚙️  VerticalAlignment: Center  -  Edit
+  03:16:28.835     ⚙️  SortOrder: LayoutOrder  -  Edit
+  03:16:28.835     ⚙️  Name: UIListLayout  -  Edit
+  03:16:28.835     ⚙️  Wraps: false  -  Edit
+  03:16:28.835     ⚙️  Padding: 0, 0  -  Edit
+  03:16:28.835     ⚙️  ItemLineAlignment: Automatic  -  Edit
+  03:16:28.835     ⚙️  HorizontalFlex: SpaceAround  -  Edit
+  03:16:28.835
+📁 Frame : VolumeGroup  -  Edit
+  03:16:28.835  📍 Path: StarterGui.MusicPlayerGUI.PaddingFrame.MainContainer.ContentFrame.MediaButtonFrame.BottomGroup.VolumeGroup  -  Edit
+  03:16:28.835     ⚙️  Visible: true  -  Edit
+  03:16:28.835     ⚙️  ClipsDescendants: false  -  Edit
+  03:16:28.835     ⚙️  BorderColor3: 0, 0, 0  -  Edit
+  03:16:28.835     ⚙️  LayoutOrder: 0  -  Edit
+  03:16:28.835     ⚙️  BackgroundTransparency: 1  -  Edit
+  03:16:28.835     ⚙️  Rotation: 0  -  Edit
+  03:16:28.835     ⚙️  BackgroundColor3: 255, 255, 255  -  Edit
+  03:16:28.835     ⚙️  Name: VolumeGroup  -  Edit
+  03:16:28.835     ⚙️  Position: {0, 0}, {0, 0}  -  Edit
+  03:16:28.835     ⚙️  AnchorPoint: 0, 0  -  Edit
+  03:16:28.836     ⚙️  ZIndex: 1  -  Edit
+  03:16:28.836     ⚙️  BorderSizePixel: 0  -  Edit
+  03:16:28.836     ⚙️  Size: {0, 0}, {0, 0}  -  Edit
+  03:16:28.836
+📁 UIListLayout : UIListLayout  -  Edit
+  03:16:28.836  📍 Path: StarterGui.MusicPlayerGUI.PaddingFrame.MainContainer.ContentFrame.MediaButtonFrame.BottomGroup.VolumeGroup.UIListLayout  -  Edit
+  03:16:28.836     ⚙️  FillDirection: Horizontal  -  Edit
+  03:16:28.836     ⚙️  HorizontalAlignment: Center  -  Edit
+  03:16:28.836     ⚙️  VerticalFlex: None  -  Edit
+  03:16:28.836     ⚙️  VerticalAlignment: Center  -  Edit
+  03:16:28.836     ⚙️  SortOrder: LayoutOrder  -  Edit
+  03:16:28.836     ⚙️  Name: UIListLayout  -  Edit
+  03:16:28.836     ⚙️  Wraps: false  -  Edit
+  03:16:28.836     ⚙️  Padding: 0, 0  -  Edit
+  03:16:28.836     ⚙️  ItemLineAlignment: Automatic  -  Edit
+  03:16:28.836     ⚙️  HorizontalFlex: SpaceBetween  -  Edit
+  03:16:28.836
+📁 ImageButton : VolumeIncreaseButton  -  Edit
+  03:16:28.836  📍 Path: StarterGui.MusicPlayerGUI.PaddingFrame.MainContainer.ContentFrame.MediaButtonFrame.BottomGroup.VolumeGroup.VolumeIncreaseButton  -  Edit
+  03:16:28.836     ⚙️  LayoutOrder: 3  -  Edit
+  03:16:28.836     ⚙️  ImageTransparency: 0  -  Edit
+  03:16:28.836     ⚙️  AnchorPoint: 1, 0  -  Edit
+  03:16:28.836     ⚙️  Image: rbxassetid://116014539852278  -  Edit
+  03:16:28.836     ⚙️  TileSize: {1, 0}, {1, 0}  -  Edit
+  03:16:28.836     ⚙️  ZIndex: 1  -  Edit
+  03:16:28.836     ⚙️  BorderSizePixel: 0  -  Edit
+  03:16:28.836     ⚙️  Size: {0, 0}, {0, 0}  -  Edit
+  03:16:28.836     ⚙️  ScaleType: Fit  -  Edit
+  03:16:28.836     ⚙️  ClipsDescendants: false  -  Edit
+  03:16:28.836     ⚙️  BorderColor3: 0, 0, 0  -  Edit
+  03:16:28.836     ⚙️  AutoButtonColor: true  -  Edit
+  03:16:28.837     ⚙️  Rotation: 0  -  Edit
+  03:16:28.837     ⚙️  Visible: true  -  Edit
+  03:16:28.837     ⚙️  Name: VolumeIncreaseButton  -  Edit
+  03:16:28.837     ⚙️  Position: {0, 0}, {0, 0}  -  Edit
+  03:16:28.837     ⚙️  SliceScale: 1  -  Edit
+  03:16:28.837     ⚙️  ImageColor3: 255, 255, 255  -  Edit
+  03:16:28.837     ⚙️  BackgroundTransparency: 1  -  Edit
+  03:16:28.837     ⚙️  BackgroundColor3: 255, 255, 255  -  Edit
+  03:16:28.837
+📁 Frame : VolumeSlider  -  Edit
+  03:16:28.837  📍 Path: StarterGui.MusicPlayerGUI.PaddingFrame.MainContainer.ContentFrame.MediaButtonFrame.BottomGroup.VolumeGroup.VolumeSlider  -  Edit
+  03:16:28.837     ⚙️  Visible: true  -  Edit
+  03:16:28.837     ⚙️  ClipsDescendants: false  -  Edit
+  03:16:28.837     ⚙️  BorderColor3: 0, 0, 0  -  Edit
+  03:16:28.837     ⚙️  LayoutOrder: 2  -  Edit
+  03:16:28.837     ⚙️  BackgroundTransparency: 0  -  Edit
+  03:16:28.837     ⚙️  Rotation: 0  -  Edit
+  03:16:28.837     ⚙️  BackgroundColor3: 191, 0, 96  -  Edit
+  03:16:28.837     ⚙️  Name: VolumeSlider  -  Edit
+  03:16:28.837     ⚙️  Position: {0, 0}, {0, 0}  -  Edit
+  03:16:28.837     ⚙️  AnchorPoint: 0, 0  -  Edit
+  03:16:28.837     ⚙️  ZIndex: 1  -  Edit
+  03:16:28.837     ⚙️  BorderSizePixel: 0  -  Edit
+  03:16:28.837     ⚙️  Size: {0, 0}, {0, 0}  -  Edit
+  03:16:28.838
+📁 UICorner : UICorner  -  Edit
+  03:16:28.838  📍 Path: StarterGui.MusicPlayerGUI.PaddingFrame.MainContainer.ContentFrame.MediaButtonFrame.BottomGroup.VolumeGroup.VolumeSlider.UICorner  -  Edit
+  03:16:28.838     ⚙️  Name: UICorner  -  Edit
+  03:16:28.838     ⚙️  CornerRadius: 0, 10  -  Edit
+  03:16:28.838
+📁 Frame : VolumeProgress  -  Edit
+  03:16:28.838  📍 Path: StarterGui.MusicPlayerGUI.PaddingFrame.MainContainer.ContentFrame.MediaButtonFrame.BottomGroup.VolumeGroup.VolumeSlider.VolumeProgress  -  Edit
+  03:16:28.838     ⚙️  Visible: true  -  Edit
+  03:16:28.838     ⚙️  ClipsDescendants: false  -  Edit
+  03:16:28.838     ⚙️  BorderColor3: 0, 0, 0  -  Edit
+  03:16:28.838     ⚙️  LayoutOrder: 2  -  Edit
+  03:16:28.838     ⚙️  BackgroundTransparency: 0  -  Edit
+  03:16:28.838     ⚙️  Rotation: 0  -  Edit
+  03:16:28.838     ⚙️  BackgroundColor3: 255, 255, 255  -  Edit
+  03:16:28.838     ⚙️  Name: VolumeProgress  -  Edit
+  03:16:28.838     ⚙️  Position: {0, 0}, {0, 0}  -  Edit
+  03:16:28.838     ⚙️  AnchorPoint: 0, 0  -  Edit
+  03:16:28.838     ⚙️  ZIndex: 1  -  Edit
+  03:16:28.838     ⚙️  BorderSizePixel: 0  -  Edit
+  03:16:28.838     ⚙️  Size: {0, 0}, {1, 0}  -  Edit
+  03:16:28.838
+📁 UICorner : UICorner  -  Edit
+  03:16:28.838  📍 Path: StarterGui.MusicPlayerGUI.PaddingFrame.MainContainer.ContentFrame.MediaButtonFrame.BottomGroup.VolumeGroup.VolumeSlider.VolumeProgress.UICorner  -  Edit
+  03:16:28.838     ⚙️  Name: UICorner  -  Edit
+  03:16:28.838     ⚙️  CornerRadius: 0, 10  -  Edit
+  03:16:28.838
+📁 ImageButton : VolumeDecreaseButton  -  Edit
+  03:16:28.838  📍 Path: StarterGui.MusicPlayerGUI.PaddingFrame.MainContainer.ContentFrame.MediaButtonFrame.BottomGroup.VolumeGroup.VolumeDecreaseButton  -  Edit
+  03:16:28.838     ⚙️  LayoutOrder: 1  -  Edit
+  03:16:28.838     ⚙️  ImageTransparency: 0  -  Edit
+  03:16:28.838     ⚙️  AnchorPoint: 0, 0  -  Edit
+  03:16:28.838     ⚙️  Image: rbxassetid://95086591790908  -  Edit
+  03:16:28.839     ⚙️  TileSize: {1, 0}, {1, 0}  -  Edit
+  03:16:28.839     ⚙️  ZIndex: 1  -  Edit
+  03:16:28.839     ⚙️  BorderSizePixel: 1  -  Edit
+  03:16:28.839     ⚙️  Size: {0, 0}, {0, 0}  -  Edit
+  03:16:28.839     ⚙️  ScaleType: Fit  -  Edit
+  03:16:28.839     ⚙️  ClipsDescendants: false  -  Edit
+  03:16:28.839     ⚙️  BorderColor3: 27, 42, 53  -  Edit
+  03:16:28.839     ⚙️  AutoButtonColor: false  -  Edit
+  03:16:28.839     ⚙️  Rotation: 0  -  Edit
+  03:16:28.839     ⚙️  Visible: true  -  Edit
+  03:16:28.839     ⚙️  Name: VolumeDecreaseButton  -  Edit
+  03:16:28.839     ⚙️  Position: {0, 0}, {0, 0}  -  Edit
+  03:16:28.839     ⚙️  SliceScale: 1  -  Edit
+  03:16:28.839     ⚙️  ImageColor3: 255, 255, 255  -  Edit
+  03:16:28.839     ⚙️  BackgroundTransparency: 1  -  Edit
+  03:16:28.839     ⚙️  BackgroundColor3: 163, 162, 165  -  Edit
+  03:16:28.839
+📁 TextButton : VoteSkipButton  -  Edit
+  03:16:28.839  📍 Path: StarterGui.MusicPlayerGUI.PaddingFrame.MainContainer.ContentFrame.MediaButtonFrame.BottomGroup.VoteSkipButton  -  Edit
+  03:16:28.839     ⚙️  LayoutOrder: 0  -  Edit
+  03:16:28.839     ⚙️  TextWrapped: true  -  Edit
+  03:16:28.839     ⚙️  AnchorPoint: 0, 0  -  Edit
+  03:16:28.839     ⚙️  ZIndex: 1  -  Edit
+  03:16:28.839     ⚙️  BorderSizePixel: 0  -  Edit
+  03:16:28.839     ⚙️  Size: {0, 0}, {0, 0}  -  Edit
+  03:16:28.839     ⚙️  Visible: true  -  Edit
+  03:16:28.839     ⚙️  TextColor3: 255, 255, 255  -  Edit
+  03:16:28.839     ⚙️  TextXAlignment: Center  -  Edit
+  03:16:28.839     ⚙️  ClipsDescendants: false  -  Edit
+  03:16:28.839     ⚙️  BorderColor3: 0, 0, 0  -  Edit
+  03:16:28.839     ⚙️  Text: 👍 VOTE TO SKIP  -  Edit
+  03:16:28.839     ⚙️  BackgroundTransparency: 0.30000001192092896  -  Edit
+  03:16:28.840     ⚙️  AutoButtonColor: true  -  Edit
+  03:16:28.840     ⚙️  Rotation: 0  -  Edit
+  03:16:28.840     ⚙️  Font: GothamBold  -  Edit
+  03:16:28.840     ⚙️  Name: VoteSkipButton  -  Edit
+  03:16:28.840     ⚙️  Position: {0, 0}, {0, 0}  -  Edit
+  03:16:28.840     ⚙️  TextSize: 14  -  Edit
+  03:16:28.840     ⚙️  TextYAlignment: Center  -  Edit
+  03:16:28.840     ⚙️  TextScaled: true  -  Edit
+  03:16:28.840     ⚙️  BackgroundColor3: 255, 0, 127  -  Edit
+  03:16:28.840
+📁 UICorner : UICorner  -  Edit
+  03:16:28.840  📍 Path: StarterGui.MusicPlayerGUI.PaddingFrame.MainContainer.ContentFrame.MediaButtonFrame.BottomGroup.VoteSkipButton.UICorner  -  Edit
+  03:16:28.840     ⚙️  Name: UICorner  -  Edit
+  03:16:28.840     ⚙️  CornerRadius: 0, 5  -  Edit
+  03:16:28.840
+📁 UIPadding : UIPadding  -  Edit
+  03:16:28.840  📍 Path: StarterGui.MusicPlayerGUI.PaddingFrame.MainContainer.ContentFrame.MediaButtonFrame.BottomGroup.VoteSkipButton.UIPadding  -  Edit
+  03:16:28.840     ⚙️  PaddingTop: 0, 0  -  Edit
+  03:16:28.840     ⚙️  Name: UIPadding  -  Edit
+  03:16:28.840     ⚙️  PaddingBottom: 0, 0  -  Edit
+  03:16:28.840     ⚙️  PaddingLeft: 0, 10  -  Edit
+  03:16:28.840     ⚙️  PaddingRight: 0, 10  -  Edit
+  03:16:28.840
+📁 UIPadding : UIPadding  -  Edit
+  03:16:28.840  📍 Path: StarterGui.MusicPlayerGUI.PaddingFrame.MainContainer.ContentFrame.UIPadding  -  Edit
+  03:16:28.840     ⚙️  PaddingTop: 0, 15  -  Edit
+  03:16:28.840     ⚙️  Name: UIPadding  -  Edit
+  03:16:28.840     ⚙️  PaddingBottom: 0, 15  -  Edit
+  03:16:28.840     ⚙️  PaddingLeft: 0, 15  -  Edit
+  03:16:28.840     ⚙️  PaddingRight: 0, 15  -  Edit
+  03:16:28.840
+📁 TextLabel : FooterText  -  Edit
+  03:16:28.840  📍 Path: StarterGui.MusicPlayerGUI.PaddingFrame.MainContainer.ContentFrame.FooterText  -  Edit
+  03:16:28.840     ⚙️  LayoutOrder: 5  -  Edit
+  03:16:28.840     ⚙️  TextWrapped: true  -  Edit
+  03:16:28.841     ⚙️  AnchorPoint: 0, 0  -  Edit
+  03:16:28.841     ⚙️  TextTruncate: None  -  Edit
+  03:16:28.841     ⚙️  MaxVisibleGraphemes: -1  -  Edit
+  03:16:28.841     ⚙️  ZIndex: 1  -  Edit
+  03:16:28.841     ⚙️  BorderSizePixel: 0  -  Edit
+  03:16:28.841     ⚙️  Size: {1, 0}, {0, 20}  -  Edit
+  03:16:28.841     ⚙️  TextColor3: 255, 255, 255  -  Edit
+  03:16:28.841     ⚙️  RichText: false  -  Edit
+  03:16:28.841     ⚙️  TextXAlignment: Center  -  Edit
+  03:16:28.841     ⚙️  ClipsDescendants: false  -  Edit
+  03:16:28.841     ⚙️  BorderColor3: 0, 0, 0  -  Edit
+  03:16:28.841     ⚙️  Text: © 2025 - Omniverse Highland Studio  -  Edit
+  03:16:28.841     ⚙️  BackgroundTransparency: 1  -  Edit
+  03:16:28.841     ⚙️  Visible: true  -  Edit
+  03:16:28.841     ⚙️  Rotation: 0  -  Edit
+  03:16:28.841     ⚙️  Font: Unknown  -  Edit
+  03:16:28.841     ⚙️  Name: FooterText  -  Edit
+  03:16:28.841     ⚙️  Position: {0, 0}, {0, 0}  -  Edit
+  03:16:28.841     ⚙️  TextSize: 12  -  Edit
+  03:16:28.841     ⚙️  TextYAlignment: Center  -  Edit
+  03:16:28.841     ⚙️  TextScaled: false  -  Edit
+  03:16:28.841     ⚙️  BackgroundColor3: 255, 255, 255  -  Edit
+  03:16:28.841
+📈 ===== AUDIT SUMMARY =====  -  Edit
+  03:16:28.841  Total Objects: 60  -  Edit
+  03:16:28.841  Responsive Elements: 33/60  -  Edit
+  03:16:28.842  ✅ Complete audit finished! Ready for UI Builder.  -  Edit
