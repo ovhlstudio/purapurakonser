@@ -1,7 +1,7 @@
-# 🏛️ 00 - BLUEPRINT & AI DOCTRINE
+# 🛡️ 00 - BLUEPRINT & AI DOCTRINE
 
-**Versi:** 1.0
-**Status:** FINAL
+**Versi:** 2.0  
+**Status:** FINAL  
 **Tujuan:** Dokumen ini adalah "Kitab Suci" (Single Source of Truth) untuk Visi Proyek dan Aturan Kolaborasi (SOP) antara Developer (Manusia) dan AI (Principal Assistant). AI **wajib** mematuhi semua doktrin dan SOP di dokumen ini.
 
 ---
@@ -19,7 +19,7 @@ Dokumen ini mendefinisikan _gameplay loop_ fundamental, pilar, dan visi masa dep
 
 -   **Player Onboarding:** Player yang pertama kali _join_ (belum pernah masuk) akan _spawn_ di "Zona Luar" (di luar panggung). Mereka hanya akan mendengar suara musik sayup-sayup.
 -   **Zone Selection:** Player bebas berjalan dan menjelajah untuk memilih zona panggung (contoh: Zona Musik Dangdut).
--   **Spatial Audio:** _Experience_ audio akan imersif menggunakan _spatial sound_ (L dan R). Suara akan berubah (misal: menjauh, berbelok) berdasarkan pergerakan dan posisi player. Ini akan dikontrol via Atribut `Side:L` atau `Side:R` pada _part_.
+-   **Spatial Audio:** _Experience_ audio akan imersif menggunakan _spatial sound_ (L dan R). Suara akan berubah (misal: menjauh, berbelok) berdasarkan pergerakan dan posisi player. Ini akan dikontrol via Atribut `Audio_Side:L` atau `Audio_Side:R` pada _part_.
 -   **Music Logic (AutoDJ vs Manual):**
     -   Sistem musik punya dua mode: **AutoDJ** (default, memutar lagu random dari _playlist_ zona) dan **Manual** (dipilih oleh _role_ tertentu).
     -   Jika mode Manual selesai memutar 1 lagu, sistem akan otomatis kembali ke mode AutoDJ.
@@ -51,11 +51,11 @@ Dokumen ini mendefinisikan _gameplay loop_ fundamental, pilar, dan visi masa dep
     -   Hanya _role_ tertentu (via `PermissionSync`) yang bisa menggunakan _Media Controls_ (Play, Pause, Stop, Next).
     -   Player biasa (tanpa _role_) tombolnya akan di-_disable_.
 -   **Player Persistence (DataStore):**
-    -   Sistem akan menyimpan data player menggunakan `Server/DataModule/init.lua` (wrapper DataStore).
+    -   Sistem akan menyimpan data player menggunakan `Server/Services/DataModule/init.lua` (wrapper DataStore).
     -   **Data Awal:** `LastKnownZone`. Player yang _rejoin_ akan langsung di-_spawn_ ke zona terakhir tersebut, tidak lagi di "Zona Luar".
     -   **Future-Proof:** Modul ini akan dipakai untuk menyimpan data _playtime_, _badge_, dll.
 -   **Monetization & Bypass (Future-Proof):**
-    -   Akan ada `Server/MonetizationModule/init.lua` untuk _gamepass_ dan _dev products_.
+    -   Akan ada `Server/Services/MonetizationModule/init.lua` untuk _gamepass_ dan _dev products_.
     -   **Config Flag (Wajib):** Semua fitur berbayar (Request Lagu, Kirim Salam) _wajib_ memiliki _toggle_ `true/false` di `Server/Config.lua`.
     -   **Permission Bypass (Wajib):** _Logic_ pembayaran **WAJIB** di-_skip_ jika player memiliki _role_ (dicek via `PermissionSync:CanPlayerDo(...)`).
 
@@ -71,10 +71,13 @@ Dokumen ini mendefinisikan _gameplay loop_ fundamental, pilar, dan visi masa dep
 Ini adalah aturan fundamental yang mendefinisikan peran AI dalam proyek ini.
 
 -   **2.1. Misi Utama AI:** Peran AI **bukan** sebagai _koder_ pasif, tapi sebagai **Principal Assistant** (Partner Arsitek). AI harus proaktif, visioner, paham arsitektur, dan ikut memikirkan _scalability_ serta _best practice_.
+
 -   **2.2. Prinsip Inisiatif:** AI didorong untuk:
+
     -   Memberi saran _improvement_ (Misal: "Ini bisa lebih efisien jika pakai _coroutine_").
     -   Mendeteksi _potential bug_ sebelum terjadi (Misal: "Logic ini rawan _race condition_").
     -   Selalu memikirkan _fallback_ dan _error handling_ (sesuai ADR `ERROR HANDLING PATTERNS`).
+
 -   **2.3. Guardrails Utama AI (Wajib Patuh):**
     -   **Anti-Asumsi:** Dilarang keras berasumsi. Selalu patuh pada `01-ADR-FINAL.md`. Jika ada yang tidak jelas, tanyakan.
     -   **Patuh Workflow:** Wajib mengikuti alur kerja di SOP (Section 3).
@@ -89,37 +92,40 @@ Ini adalah Standar Operasional Prosedur (SOP) teknis untuk kolaborasi.
 
 -   **3.1. Alur Kerja Standar (The Loop):**
 
-    1.  AI _refresh_ konteks (Membaca 4 file).
-    2.  Developer (Manusia) memberikan _task_ baru (biasanya dengan mengupdate `03-DEV-Log.md`).
-    3.  AI menganalisis _task_ berdasarkan _state_ terakhir di `03-DEV-Log.md`.
-    4.  AI mengirimkan solusi **hanya** via `bash` script (`lokal/tools/run.sh`).
-    5.  Developer (Manusia) mengeksekusi script.
-    6.  Developer (Manusia) melakukan tes di Studio.
-    7.  Developer (Manusia) **wajib** mengupdate `03-DEV-Log.md` dengan status (BERHASIL/GAGAL), _error log_ (jika ada), dan _file changes_.
+    1. AI _refresh_ konteks (Membaca 5 file: Blueprint, ADR, ADR-Log, DEV-Log, AttributeContract).
+    2. Developer (Manusia) memberikan _task_ baru (biasanya dengan mengupdate `03-DEV-Log.md`).
+    3. AI menganalisis _task_ berdasarkan _state_ terakhir di `03-DEV-Log.md`.
+    4. AI mengirimkan solusi **hanya** via `bash` script (`lokal/tools/run.sh`).
+    5. Developer (Manusia) mengeksekusi script.
+    6. Developer (Manusia) melakukan tes di Studio.
+    7. Developer (Manusia) **wajib** mengupdate `03-DEV-Log.md` dengan status (BERHASIL/GAGAL), _error log_ (jika ada), dan _file changes_.
 
 -   **3.2. Aturan Penulisan Log (Wajib!):**
 
     -   **Universal:** Log terbaru **SELALU** di baris paling atas (Reverse Chronological).
     -   **Format `03-DEV-Log.md`:**
+
         ```markdown
         ### [YYYY-MM-DD] - [JUDUL TASK]
 
         -   **[STATUS]:** (BERHASIL / GAGAL / DALAM PROGRES)
         -   **[FILE_CHANGES]:**
-            -   `MODIFIED: src/Server/MusicModule/init.lua`
+            -   `MODIFIED: src/Server/Business/MusicModule/init.lua`
             -   `CREATED: src/Shared/OVHL_UI/ContentComponents/Card.lua`
             -   `DELETED: N/A`
         -   **[ERROR_LOG]:** (Paste error console kalo ada, atau 'N/A')
         -   **[SOLUSI/CATATAN]:** (Penjelasan singkat apa yg dilakuin, atau solusi kalo error)
         -   **[PESAN_AI]:** (Opsional: Pesan spesifik buat AI untuk task berikutnya)
         ```
+
     -   **Format `02-ADR-Log.md`:**
+
         ```markdown
         ### [YYYY-MM-DD] - Perubahan Decision #[Nomor] - [Judul ADR]
 
-        -   **[KEPUTUSAN]:** (Misal: Mengganti Decision #5 jadi 'Abandoned')
-        -   **[KONTEKS]:** (Kenapa ini dibahas? Misal: Integrasi Kohl's Admin gagal total.)
-        -   **[ALASAN]:** (Alasan teknis. Misal: Terjadi race condition, API tidak register.)
+        -   **[KEPUTUSAN]:** (Misal: Menambahkan Decision #8 - Logger System)
+        -   **[KONTEKS]:** (Kenapa ini dibahas? Misal: Production logs terlalu verbose)
+        -   **[ALASAN]:** (Alasan teknis. Misal: Butuh granular control per module)
         ```
 
 -   **3.3. Aturan Eksekusi (Developer):**
@@ -139,8 +145,204 @@ Ini adalah Standar Operasional Prosedur (SOP) teknis untuk kolaborasi.
 
 Ini adalah daftar file yang WAJIB dibaca AI setiap kali memulai sesi.
 
--   **`00-Blueprint-AI-Context.md`:** (File ini) Visi, Doktrin, dan SOP.
--   **`01-ADR-FINAL.md`:** Kitab Suci Arsitektur (Technical Bible V4.1).
--   **`02-ADR-Log.md`:** Catetan Sejarah Perubahan Arsitektur.
+-   **`00-blueprint.md`:** (File ini) Visi, Doktrin, dan SOP.
+-   **`01-ADR-FINAL.md`:** Kitab Suci Arsitektur (Technical Bible V5.0).
+-   **`02-ADR-Log.md`:** Catatan Sejarah Perubahan Arsitektur.
 -   **`03-DEV-Log.md`:** Jurnal Progres, Error, dan Status Terakhir Proyek.
--   **`04-Roadmap-V2.md`:** Peta Jalan & Daftar Task (To-Do List) Global.
+-   **`docs/AttributeContract.md`:** Kontrak Builder-Scripter untuk konfigurasi via Attributes.
+
+---
+
+## 5. 🏗️ Builder-Scripter Workflow
+
+### 5.1. Builder Responsibilities (Zero Code Touch)
+
+**Apa yang Builder Kerjain:**
+
+-   ✅ Buat model di Workspace (contoh: `Workspace.Stages.DangdutStage`)
+-   ✅ Tambah Attributes via Properties panel di Studio
+-   ✅ Test langsung di Studio tanpa nunggu scripter
+-   ✅ Lihat `docs/AttributeContract.md` untuk tau attribute apa aja yang tersedia
+
+**Contoh Real Workflow Builder:**
+
+1. Builder bikin model panggung baru: `Workspace.Stages.RockStage`
+2. Builder buka Properties → Add Attribute:
+    - `Zone_ID` (String): `"rock"`
+    - `Zone_DisplayName` (String): `"Rock Zone"`
+    - `Spawn_Position` (Vector3): `Vector3.new(100, 5, 0)`
+3. Builder klik Play di Studio → Zone langsung muncul di UI
+4. **ZERO CODE TOUCH** ✅
+
+### 5.2. Scripter Responsibilities (Attribute Validation)
+
+**Apa yang Scripter Kerjain:**
+
+-   ✅ Validate attributes di module `Init()`
+-   ✅ Handle missing/invalid attributes dengan graceful defaults
+-   ✅ Update `docs/AttributeContract.md` setiap kali tambah attribute baru
+-   ✅ Log warning/error kalau builder salah setup attribute
+
+**Contoh Real Workflow Scripter:**
+
+```lua
+-- Server/Business/ZoneModule/init.lua
+function ZoneModule:ScanZones()
+    for _, stage in ipairs(workspace.Stages:GetChildren()) do
+        local zoneID = stage:GetAttribute("Zone_ID")
+
+        -- VALIDATION (Builder Contract)
+        if not zoneID then
+            Logger:Error("ZoneModule", "ZONE", "Missing Zone_ID attribute", {
+                Model = stage.Name
+            })
+            continue -- Skip invalid zone
+        end
+
+        -- Register zone dengan defaults
+        self.Zones[zoneID] = {
+            Model = stage,
+            DisplayName = stage:GetAttribute("Zone_DisplayName") or zoneID,
+            SpawnPosition = stage:GetAttribute("Spawn_Position") or stage.PrimaryPart.Position
+        }
+    end
+end
+```
+
+### 5.3. The Contract (Aturan Baku)
+
+**Builder MUST:**
+
+-   Follow attribute naming convention di `AttributeContract.md`
+-   Cek dokumentasi sebelum tanya ke scripter
+-   Test setup sendiri dulu sebelum report bug
+
+**Scripter MUST:**
+
+-   Validate + provide defaults untuk semua attributes
+-   Update `AttributeContract.md` kalau ada attribute baru
+-   Log error yang jelas kalau builder salah setup
+
+**Both MUST:**
+
+-   Saling komunikasi via `AttributeContract.md` sebagai single source of truth
+-   Jangan hardcode config di script (selalu pakai attributes kalau bisa)
+
+---
+
+## 6. 📊 Logging Standards (Production vs Development)
+
+### 6.1. Log Level Hierarchy
+
+```lua
+DEBUG  → 🔍 Verbose: function calls, data dumps (development only)
+INFO   → ℹ️ Normal: user actions, state changes (production default)
+WARN   → ⚠️ Warning: recoverable errors, deprecations
+ERROR  → 💀 Critical: failures, exceptions (always shown)
+PERF   → ⚡ Performance: timing data (optional, for profiling)
+```
+
+### 6.2. Development vs Production Output
+
+**🔧 Development Mode (`Config.Debug.GlobalLogLevel = "DEBUG"`):**
+
+```
+[14:32:01] 🖥️ 🎵 🔍 📊 [MusicModule] PlaySong called
+└─ Data: {"SongID":"123","Zone":"dangdut"}
+[14:32:01] 🖥️ 🎵 ℹ️ 📢 [MusicModule] Playing: Kopi Dangdut - Fahmi Shahab
+[14:32:02] 🖥️ 🎵 ⚡ 📢 [MusicModule] PlaySong took 850.32ms
+```
+
+**🚀 Production Mode (`Config.Debug.GlobalLogLevel = "INFO"`):**
+
+```
+[14:32:01] 🖥️ 🎵 ℹ️ 📢 [MusicModule] Playing: Kopi Dangdut - Fahmi Shahab
+```
+
+**🔥 Error Mode (Always Shows):**
+
+```
+[14:35:12] 🖥️ 💾 💀 📢 [DataModule] CRITICAL: Data save failed for Player1
+└─ Data: {"PlayerID":12345,"Error":"Request was throttled"}
+```
+
+### 6.3. Emoji Legend
+
+| Category   | Emoji | Meaning                 |
+| ---------- | ----- | ----------------------- |
+| **Realm**  | 🖥️    | Server                  |
+|            | 💻    | Client                  |
+|            | 🔗    | Shared                  |
+| **Domain** | 🎵    | Music                   |
+|            | 🗺️    | Zone                    |
+|            | 💾    | Data                    |
+|            | 👑    | Admin                   |
+|            | 🎨    | UI                      |
+|            | 📡    | Network                 |
+|            | 💰    | Monetization            |
+| **Level**  | 🔍    | Debug                   |
+|            | ℹ️    | Info                    |
+|            | ⚠️    | Warning                 |
+|            | 💀    | Error                   |
+|            | ⚡    | Performance             |
+| **Type**   | 📢    | Announce (user-facing)  |
+|            | 📊    | Data (dumps/inspection) |
+|            | 🎬    | Action (system actions) |
+|            | ✅    | Result (success)        |
+
+### 6.4. How to Configure
+
+**For Builder/Designer (via Config.lua):**
+
+```lua
+-- Server/Config.lua
+Debug = {
+    GlobalLogLevel = "INFO",  -- Change to "DEBUG" for testing
+
+    -- Optional: Per-module override
+    ModuleLevels = {
+        MusicModule = "DEBUG",  -- Only MusicModule shows debug logs
+        ZoneModule = "INFO",
+    },
+
+    EnablePerfLogs = false,  -- Set true untuk track performance
+}
+```
+
+**Zero Script Touch:** Builder cukup ganti string `"DEBUG"` jadi `"INFO"`, save, test.
+
+---
+
+## 7. 🎯 AI Quick Reference (Critical Reminders)
+
+**❌ NEVER:**
+
+-   Memberikan kode Lua langsung di chat
+-   Meminta developer copy-paste baris per baris
+-   Berasumsi `MusicCommandsServer.lua` akan berhasil (Decision #5: Abandoned)
+-   Hardcode paths seperti `game.ServerScriptService.PuraPuraPesta`
+-   Ignore `AttributeContract.md` saat bikin fitur yang butuh builder input
+
+**✅ ALWAYS:**
+
+-   Deliver fix dalam **satu bash script** (Decision #7)
+-   Gunakan full path relatif (`src/Server/...`)
+-   Sertakan **Backup**, **Action (cat << EOF)**, **Audit**
+-   Gunakan `GetModule()` untuk akses module lain
+-   Cek `docs/AttributeContract.md` kalau feature butuh Attributes
+-   Gunakan relative paths (`require(script.Parent.Parent.init)`) untuk internal modules
+-   Gunakan full paths (`require(game.ServerScriptService.Server.init)`) HANYA untuk 3rd-party addons
+
+**✅ DECISION CHECKLIST (Before Coding):**
+
+1. Apakah ini butuh attribute baru? → Update `AttributeContract.md`
+2. Apakah ini modul baru? → Tentukan domain (Core/Services/Business)
+3. Apakah ini butuh network communication? → Tambah ke `Network/Events.lua`
+4. Apakah ini butuh log? → Gunakan Logger dengan level yang tepat
+5. Apakah ini butuh permission check? → Gunakan `PermissionSync`
+
+---
+
+**Document Version:** 2.0  
+**Last Updated:** 2025-11-07  
+**Status:** Production Ready ✅

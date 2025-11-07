@@ -1,6 +1,24 @@
-# 📓 02 - ADR LOG (Architecture Decision Log)
+# 🏛️ 02 - ADR Log (Catatan Perubahan Arsitektur)
 
-**Tujuan:** Dokumen ini adalah arsip (log) dari _setiap_ perubahan keputusan arsitektur. Ini adalah "catatan sejarah" untuk melacak _kenapa_ `01-ADR-FINAL.md` diubah. Log terbaru selalu di atas.
+**Tujuan:** Mencatat _kenapa_ dan _kapan_ keputusan arsitektur (ADR) diubah.
+**Aturan:** Entri terbaru SELALU di paling atas (Reverse Chronological).
+
+---
+
+### [2025-11-07] - Penambahan Decision #8, #9, #10 - Arsitektur V4.2
+
+-   **[KEPUTUSAN]:** Menambahkan tiga (3) Decision baru ke `01-ADR-FINAL.md`, menaikkan versi ke v4.2.
+    -   `Decision #8: Logger & Log Level System`
+    -   `Decision #9: Module Domain Organization`
+    -   `Decision #10: Attribute-Based Builder Contract`
+-   **[KONTEKS]:** Dokumen ADR V4.1.1 (dan Blueprint V1) belum memiliki standar yang jelas untuk tiga area kritis:
+    1.  _Logging:_ Butuh kontrol granular (DEBUG vs INFO) untuk _production_.
+    2.  _Arsitektur:_ Struktur folder "flat" sulit di-_maintain_.
+    3.  _Workflow:_ Tidak ada "kontrak" resmi antara Builder (desainer) dan Scripter (koder).
+-   **[ALASAN]:**
+    -   **Decision #8:** Mengimplementasi Logger multi-level agar log _production_ bersih, namun _development_ tetap bisa _verbose_ (rinci) via `Config.lua`.
+    -   **Decision #9:** Mengadopsi arsitektur 3-Domain (`Core`, `Services`, `Business`) untuk memisahkan tanggung jawab (Separation of Concerns) dan mempermudah _maintenance_ jangka panjang.
+    -   **Decision #10:** Menetapkan "kontrak" via Atribut (Attributes) agar Builder bisa mengkonfigurasi _gameplay_ (seperti `Zone_ID`) tanpa menyentuh kode Lua, menciptakan workflow "Zero Code Touch".
 
 ---
 

@@ -1,10 +1,18 @@
 # 🏛️ 01 - ADR (Architecture Decision Record) - FINAL
 
-**Version 4.1.1 (Rojo Ready)** | **For Non-Technical Developers**
+**Version 4.2 (Logger, Domain, Contract Ready)** | **For Technical Developers & AI**
 
 > **Project Map:** Pura Pura Pesta | Tampat Nonton Konser Dengan Zona Panggung Berbeda Genre
 
 ---
+
+## 🚀 CHANGELOG V4.2 (NEW)
+
+-   **Tambahan (Decision #8):** Menambahkan `Logger & Log Level System` untuk kontrol log granular (Debug vs Info) dengan format emoji.
+-   **Tambahan (Decision #9):** Menambahkan `Module Domain Organization` (Core, Services, Business) untuk arsitektur yang lebih rapi.
+-   **Tambahan (Decision #10):** Menambahkan `Attribute-Based Builder Contract` untuk workflow "zero code touch" bagi builder.
+-   **Update:** Mengganti `File Structure Reference` V4.1 dengan V4.2 (Domain-based).
+-   **Update:** Memperbarui `Module Template` untuk menyesuaikan _relative path_ setelah migrasi domain.
 
 ## 🚀 CHANGELOG V4.1.1
 
@@ -35,7 +43,7 @@ This ADR is the **SINGLE SOURCE OF TRUTH** for:
 
 ## **🎯 CORE ARCHITECTURE DECISIONS**
 
-### **Decision #1: Folder-Based Auto-Discovery (NEW & SIMPLIFIED)**
+### **Decision #1: Folder-Based Auto-Discovery (Simplified)**
 
 **Context:** We need plug-and-play modules without manual registration.
 **Decision:** Use a 3-phase loading process managed by a main "Kernel" `init.lua`.
@@ -65,6 +73,7 @@ ServerKernel.Modules["Config"] = Config
 
 -- === PHASE 2: MODULE DISCOVERY ===
 -- Auto-scan FOLDERS (not all files) for modules
+-- [UPDATE V4.2]: This logic is expanded by Decision #9 to scan domain folders
 for _, item in ipairs(script:GetChildren()) do
     if item:IsA("Folder") and item:FindFirstChild("init") then
         local moduleName = item.Name
@@ -98,18 +107,19 @@ return ServerKernel
 
 ---
 
-### **Decision #2: Communication via Relative Path Registry (NEW & SIMPLIFIED)**
+### **Decision #2: Communication via Relative Path Registry**
 
 **Context:** Modules need to talk to each other without hardcoding paths.
-**Decision:** All modules use a **relative path** (`script.Parent.Parent.init`) to access the main "Kernel".
+**Decision:** All modules use a **relative path** (`script.Parent.Parent.init` or `script.Parent.Parent.Parent.init`) to access the main "Kernel".
 
-**Implementation Pattern (Module `Server/MusicModule/init.lua`):**
+**Implementation Pattern (Module `Server/Business/MusicModule/init.lua`):**
 
 ```lua
 local MusicManager = {}
 
--- Get the Kernel by going up two levels (MusicModule -> Server -> init.lua)
-local ServerKernel = require(script.Parent.Parent.init)
+-- [UPDATE V4.2]: Get the Kernel by going up three levels
+-- (MusicModule -> Business -> Server -> init.lua)
+local ServerKernel = require(script.Parent.Parent.Parent.init)
 
 -- Cache modules (will be assigned in Init)
 local Logger
@@ -122,7 +132,8 @@ function MusicManager:Init()
     Config = ServerKernel:GetModule("Config")
 
     if Logger then
-        Logger:Info("MusicManager Initialized")
+        -- [UPDATE V4.2]: Using new Logger standard
+        Logger:Info("MusicModule", "MUSIC", "MusicManager Initialized")
     end
 end
 
@@ -213,13 +224,14 @@ Responsibilities = {
 }
 ```
 
-**Implementation Pattern (`Client/TopbarIntegration/init.lua`):**
+**Implementation Pattern (`Client/Services/TopbarIntegration/init.lua`):**
 
 ```lua
--- Client/TopbarIntegration/init.lua
+-- Client/Services/TopbarIntegration/init.lua
 local TopbarIntegration = {}
 local Icon = require(game:GetService("ReplicatedStorage").TopbarPlus.Icon)
-local ClientKernel = require(script.Parent.Parent.init)
+-- [UPDATE V4.2] Pathing updated for domain structure
+local ClientKernel = require(script.Parent.Parent.Parent.init)
 
 function TopbarIntegration:Init()
     local musicIcon = Icon.new()
@@ -251,8 +263,8 @@ return TopbarIntegration
 **Context:** Upaya untuk mendaftarkan command `/play` via `MusicCommandsServer.lua` ke Kohl's Admin System **gagal total**.
 **Decision:** Kami **MENGABANDON** integrasi penuh dengan Kohl's Admin for _feature commands_.
 
-1.  **PermissionSync:** Module `PermissionSync` (di `Server/AdminModule/init.lua`) kita tetap ada dan berfungsi sebagai jembatan _logic_ (untuk cek rank internal dan _bypass_ pembayaran).
-2.  **MusicCommandsServer.lua:** File ini akan **DITINGGALKAN** dan **DIABAIKAN**. Kontrol musik 100% melalui **UI kita** (`OVHL UI`).
+1.  **PermissionSync:** Module `PermissionSync` (sekarang di `Server/Core/PermissionSync/init.lua`) kita tetap ada dan berfungsi sebagai jembatan _logic_ (untuk cek rank internal dan _bypass_ pembayaran).
+2.  **MusicCommandsServer.lua:** File ini akan **DIPINDAHKAN** ke `Server/Legacy/` dan **DIABAIKAN**. Kontrol musik 100% melalui **UI kita** (`OVHL UI`).
 
 **Hasil: Arsitektur Inti kita kini 100% _independent_ dari 3rd party _admin system_ yang rapuh.**
 
@@ -277,8 +289,9 @@ Shared/OVHL_UI/
 **Implementation Pattern:**
 
 ```lua
--- Module (e.g., Client/UIModule/init.lua)
-local ClientKernel = require(script.Parent.Parent.init)
+-- Module (e.g., Client/Services/UIModule/init.lua)
+-- [UPDATE V4.2] Pathing updated for domain structure
+local ClientKernel = require(script.Parent.Parent.Parent.init)
 local OVHLUI
 
 function UIModule:Init()
@@ -308,7 +321,7 @@ end
 
 ---
 
-### **Decision #7: AI & WORKFLOW EXECUTION POLICY (NEW V4.1)**
+### **Decision #7: AI & WORKFLOW EXECUTION POLICY (V4.1)**
 
 **Context:** _Delivery_ kode manual rentan terhadap _human error_.
 **Decision:** Semua _code delivery_ dari AI harus mengikuti _atomic execution principle_ (via `bash` script).
@@ -324,7 +337,617 @@ end
 
 ---
 
+### **Decision #8: Logger & Log Level System (NEW V4.2)**
+
+**Context:**
+Developer butuh kontrol granular terhadap log output. Di development, butuh log detail (DEBUG). Di production, cuma butuh INFO/ERROR.
+
+**Decision:**
+Implementasi **Multi-Level Logger** dengan emoji-based formatting dan per-module log control.
+
+---
+
+#### **8.1. Log Level Hierarchy**
+
+```lua
+-- Server/Logger.lua
+local LOG_LEVELS = {
+    DEBUG = 1,   -- 🔍 Verbose: function calls, data dumps
+    INFO = 2,    -- ℹ️ Normal: user actions, state changes
+    WARN = 3,    -- ⚠️ Warning: recoverable errors, deprecations
+    ERROR = 4,   -- 💀 Critical: failures, exceptions
+    PERF = 5     -- ⚡ Performance: timing data
+}
+```
+
+---
+
+#### **8.2. Config Structure**
+
+```lua
+-- Server/Config.lua
+return {
+    Debug = {
+        -- Global log level (overrides module levels if set)
+        GlobalLogLevel = "INFO", -- "DEBUG" | "INFO" | "WARN" | "ERROR" | "NONE"
+
+        -- Per-module log levels (optional, overrides global)
+        ModuleLevels = {
+            MusicModule = "DEBUG",
+            ZoneModule = "INFO",
+            DataModule = "ERROR",
+        },
+
+        -- Performance logging (always separate toggle)
+        EnablePerfLogs = false,
+    }
+}
+```
+
+---
+
+#### **8.3. Log Format Specification**
+
+**Template:**
+
+```
+[HH:MM:SS] {REALM} {DOMAIN} {LEVEL} {TYPE} [{MODULE}] {MESSAGE}
+└─ Data: {JSON_DUMP} (optional, only DEBUG level)
+```
+
+**Emoji Mapping:**
+
+```lua
+local EMOJI = {
+    -- Realm
+    SERVER = "🖥️",
+    CLIENT = "💻",
+    SHARED = "🔗",
+
+    -- Domain (Module Category)
+    MUSIC = "🎵",
+    ZONE = "🗺️",
+    DATA = "💾",
+    ADMIN = "👑",
+    UI = "🎨",
+    NETWORK = "📡",
+    MONETIZATION = "💰",
+
+    -- Level
+    DEBUG = "🔍",
+    INFO = "ℹ️",
+    WARN = "⚠️",
+    ERROR = "💀",
+    PERF = "⚡",
+
+    -- Type (Message Nature)
+    ANNOUNCE = "📢", -- User-facing actions
+    DATA = "📊",     -- Data dumps/inspection
+    ACTION = "🎬",   -- System actions
+    RESULT = "✅",   -- Success confirmations
+}
+```
+
+---
+
+#### **8.4. Implementation Pattern**
+
+```lua
+-- Server/Logger.lua
+local Logger = {}
+local Config -- Assigned during Init
+local LOG_LEVELS = { DEBUG = 1, INFO = 2, WARN = 3, ERROR = 4, PERF = 5 }
+
+function Logger:Init()
+    local ServerKernel = require(script.Parent.init)
+    Config = ServerKernel:GetModule("Config")
+end
+
+-- Core logging function
+local function ShouldLog(moduleName, level)
+    if not Config then return true end -- Fallback during boot
+
+    local globalLevel = LOG_LEVELS[Config.Debug.GlobalLogLevel] or LOG_LEVELS.INFO
+    local moduleLevel = Config.Debug.ModuleLevels[moduleName]
+
+    local threshold = moduleLevel and LOG_LEVELS[moduleLevel] or globalLevel
+    return LOG_LEVELS[level] >= threshold
+end
+
+function Logger:Debug(moduleName, domain, messageType, message, data)
+    if not ShouldLog(moduleName, "DEBUG") then return end
+
+    local timestamp = os.date("%H:%M:%S")
+    local formatted = string.format(
+        "[%s] 🖥️ %s 🔍 %s [%s] %s",
+        timestamp,
+        EMOJI[domain] or "❓",
+        EMOJI[messageType] or "📢",
+        moduleName,
+        message
+    )
+    print(formatted)
+
+    if data then
+        print("└─ Data:", game:GetService("HttpService"):JSONEncode(data))
+    end
+end
+
+function Logger:Info(moduleName, domain, message)
+    if not ShouldLog(moduleName, "INFO") then return end
+
+    local timestamp = os.date("%H:%M:%S")
+    print(string.format(
+        "[%s] 🖥️ %s ℹ️ 📢 [%s] %s",
+        timestamp,
+        EMOJI[domain] or "❓",
+        moduleName,
+        message
+    ))
+end
+
+function Logger:Error(moduleName, domain, message, data)
+    -- Errors ALWAYS log (ignore level checks)
+    local timestamp = os.date("%H:%M:%S")
+    warn(string.format(
+        "[%s] 🖥️ %s 💀 📢 [%s] %s",
+        timestamp,
+        EMOJI[domain] or "❓",
+        moduleName,
+        message
+    ))
+
+    if data then
+        warn("└─ Data:", game:GetService("HttpService"):JSONEncode(data))
+    end
+end
+
+function Logger:Perf(moduleName, domain, operation, durationMs)
+    if not Config or not Config.Debug.EnablePerfLogs then return end
+
+    local timestamp = os.date("%H:%M:%S")
+    print(string.format(
+        "[%s] 🖥️ %s ⚡ 📢 [%s] %s took %.2fms",
+        timestamp,
+        EMOJI[domain] or "❓",
+        moduleName,
+        operation,
+        durationMs
+    ))
+end
+
+return Logger
+```
+
+---
+
+#### **8.5. Usage Examples**
+
+**Development Mode (`GlobalLogLevel = "DEBUG"`):**
+
+```lua
+-- Server/Business/MusicModule/init.lua
+function MusicManager:PlaySong(songID, zone)
+    local startTime = os.clock()
+
+    Logger:Debug("MusicModule", "MUSIC", "DATA", "PlaySong called", {
+        SongID = songID,
+        Zone = zone
+    })
+
+    -- ... actual logic ...
+
+    Logger:Info("MusicModule", "MUSIC", "Playing: Kopi Dangdut - Fahmi Shahab")
+
+    local elapsed = (os.clock() - startTime) * 1000
+    Logger:Perf("MusicModule", "MUSIC", "PlaySong", elapsed)
+end
+```
+
+**Output (Development):**
+
+```🖥️ 🎵 🔍 📊 [MusicModule] PlaySong called
+└─ Data: {"SongID":"123","Zone":"dangdut"} 🖥️ 🎵 ℹ️ 📢 [MusicModule] Playing: Kopi Dangdut - Fahmi Shahab 🖥️ 🎵 ⚡ 📢 [MusicModule] PlaySong took 850.32ms
+```
+
+**Output (Production - `GlobalLogLevel = "INFO"`):**
+
+```🖥️ 🎵 ℹ️ 📢 [MusicModule] Playing: Kopi Dangdut - Fahmi Shahab
+
+```
+
+**Output (Errors - ALWAYS show):**
+
+```🖥️ 💾 💀 📢 [DataModule] CRITICAL: Data save failed for Player1
+└─ Data: {"PlayerID":12345,"Error":"Request was throttled"}
+```
+
+---
+
+#### **8.6. Builder/Scripter Workflow**
+
+**For Builders:**
+
+1. Buka `Server/Config.lua`
+2. Set `GlobalLogLevel = "DEBUG"` untuk testing
+3. Set `GlobalLogLevel = "INFO"` untuk production
+
+**For Scripters:**
+
+1. Gunakan `Logger:Debug()` untuk development logging
+2. Gunakan `Logger:Info()` untuk user-facing actions
+3. Gunakan `Logger:Error()` untuk critical failures
+4. Gunakan `Logger:Perf()` untuk performance profiling
+
+**Zero Learning Curve:** Module apapun cukup panggil `Logger:[Level]()`, Config otomatis mengatur apa yang ditampilkan.
+
+---
+
+#### **8.7. Why This Matters**
+
+✅ **Granular Control:** Set log level per modul atau global.
+✅ **Production-Ready:** Production logs tetap bersih tanpa debug spam.
+✅ **Performance Monitoring:** Track bottleneck tanpa modify code.
+✅ **Emoji Visual Aid:** Scan logs dengan cepat (domain, level).
+✅ **Zero Manual Filter:** Config-driven, bukan hardcode `if DEBUG then`.
+
+---
+
+## **Decision #9: Module Domain Organization (NEW V4.2)**
+
+**Context:**
+Proyek besar butuh organisasi modul berdasarkan **responsibility domain** (Logic, Service, Business). Folder flat bikin hard maintenance.
+
+**Decision:**
+Implementasi **3-Tier Module Architecture** dengan domain-based folder grouping.
+
+---
+
+### **9.1. Domain Hierarchy (File Structure V4.2)**
+
+Ini adalah **struktur file target** yang baru, menggantikan referensi V4.1.
+
+```
+Server/
+├── init.lua                    # Kernel (unchanged)
+├── Config.lua                  # Core (Phase 1)
+├── Logger.lua                  # Core (Phase 1)
+│
+├── 🎯 Core/                    # System Foundations
+│   ├── PermissionSync/         # Authorization logic (dulu AdminModule)
+│   │   └── init.lua
+│   └── ErrorHandler/           # Global error boundary (future)
+│       └── init.lua
+│
+├── 🛎️ Services/                 # External Integrations
+│   ├── DataModule/             # DataStore wrapper
+│   │   └── init.lua
+│   ├── MonetizationModule/     # Gamepass/DevProducts
+│   │   └── init.lua
+│   └── TextFilterModule/       # Roblox text filtering (future)
+│       └── init.lua
+│
+├── 🎮 Business/                # Game Logic (Domain Specific)
+│   ├── MusicModule/            # Music playback, AutoDJ
+│   │   └── init.lua
+│   ├── ZoneModule/             # Zone teleport, spatial audio
+│   │   └── init.lua
+│   └── SalamModule/            # Shoutout system
+│       └── init.lua
+│
+└── 🔧 Legacy/                  # Deprecated/Abandoned
+    └── KohlsAdminAddons/
+        └── MusicCommands.server.lua
+```
+
+_(Struktur `Shared/` dan `Client/` akan mengikuti pola yang sama)_
+
+---
+
+### **9.2. Domain Definitions**
+
+| Domain       | Emoji | Purpose                                    | Examples                              |
+| ------------ | ----- | ------------------------------------------ | ------------------------------------- |
+| **Core**     | 🎯    | System foundations, cross-cutting concerns | Permissions, Error Handling, Security |
+| **Services** | 🛎️    | External integrations, I/O operations      | DataStore, Monetization, APIs         |
+| **Business** | 🎮    | Game-specific logic, domain rules          | Music, Zones, Gameplay                |
+| **Legacy**   | 🔧    | Deprecated/abandoned code (archived)       | Kohl's Admin addons                   |
+
+---
+
+### **9.3. Module Categorization Rules**
+
+**Ask These Questions:**
+
+1.  **"Does this module interact with Roblox services?"**
+    → YES: Put in `Services/`
+    → NO: Continue
+
+2.  **"Is this game-specific logic?"**
+    → YES: Put in `Business/`
+    → NO: Continue
+
+3.  **"Is this a system-wide concern (auth, errors)?"**
+    → YES: Put in `Core/`
+
+4.  **"Is this abandoned/deprecated?"**
+    → YES: Put in `Legacy/`
+
+---
+
+### **9.4. Migration from Flat Structure**
+
+**Before (V4.1):**
+
+```
+Server/
+├── AdminModule/        # 🎯 Core
+├── MusicModule/        # 🎮 Business
+├── DataModule/         # 🛎️ Service
+├── MonetizationModule/ # 🛎️ Service
+```
+
+**After (V4.2):**
+
+```
+Server/
+├── Core/
+│   └── PermissionSync/ (rename dari AdminModule)
+├── Business/
+│   └── MusicModule/
+└── Services/
+    ├── DataModule/
+    └── MonetizationModule/
+```
+
+**Path Change Impact:**
+
+-   **Kernel:** Auto-discovery perlu di-update (lihat 9.5).
+-   **Relative Paths:** `script.Parent.Parent.init` menjadi `script.Parent.Parent.Parent.init` (naik 1 level lagi).
+-   **GetModule():** Nama tetap sama (`GetModule("MusicModule")`).
+
+---
+
+### **9.5. Updated Kernel (Phase 2 Discovery)**
+
+Ini adalah **update** untuk `Phase 2` dari **Decision #1**.
+
+```lua
+-- Server/init.lua
+-- === PHASE 2: MODULE DISCOVERY ===
+local DOMAIN_FOLDERS = { "Core", "Services", "Business" }
+
+for _, domainFolder in ipairs(DOMAIN_FOLDERS) do
+    local domain = script:FindFirstChild(domainFolder)
+    if not domain then continue end
+
+    for _, item in ipairs(domain:GetChildren()) do
+        if item:IsA("Folder") and item:FindFirstChild("init") then
+            local moduleName = item.Name
+            local success, module = pcall(require, item.init)
+            if success then
+                ServerKernel.Modules[moduleName] = module
+            else
+                warn("[KERNEL] Failed to load module:", moduleName, module)
+            end
+        end
+    end
+end
+```
+
+---
+
+### **9.6. Benefits**
+
+✅ **Mental Model:** Developer langsung tau "ini modul business logic atau service?"
+✅ **Scalability:** Tambah modul baru, tinggal tentuin domainnya.
+✅ **Code Review:** Reviewer langsung tau scope/responsibility.
+✅ **Future AI:** AI bisa kategorisasi otomatis berdasarkan domain.
+
+---
+
+## **Decision #10: Attribute-Based Builder Contract (NEW V4.2)**
+
+**Context:**
+Builder harus bisa **configure game logic via Attributes** tanpa touch code. Scripter **WAJIB** respect attribute naming conventions.
+
+**Decision:**
+Implementasi **Attribute Contract System** dengan strict naming conventions dan auto-validation.
+
+---
+
+### **10.1. Attribute Naming Convention**
+
+**Format:**
+
+```
+[Domain]_[Property]:[Value]
+```
+
+**Examples:**
+
+```
+Zone_ID: "dangdut"           # String
+Audio_Side: "L"              # Enum (L/R/C)
+Spawn_Priority: 10           # Number
+UI_IsInteractable: true      # Boolean
+```
+
+---
+
+### **10.2. Domain-Specific Attributes**
+
+#### **🗺️ Zone System**
+
+```lua
+-- Model: Workspace.Stages.DangdutStage
+Attributes = {
+    Zone_ID = "dangdut",          -- (String) Unique zone identifier
+    Zone_DisplayName = "Dangdut", -- (String) UI-friendly name
+    Spawn_Position = Vector3,     -- (Vector3) Player spawn point
+    Spawn_Priority = 1            -- (Number) Default spawn (1 = highest)
+}
+```
+
+#### **🎵 Audio System**
+
+```lua
+-- Part: Workspace.AudioEmitters.SpeakerLeft
+Attributes = {
+    Audio_Side = "L",             -- (String) "L" | "R" | "C" (Center)
+    Audio_ZoneID = "dangdut",     -- (String) Which zone this speaker belongs to
+    Audio_MaxDistance = 100       -- (Number) Spatial audio range
+}
+```
+
+#### **🎨 UI World Elements (LED/Video Tron)**
+
+```lua
+-- Part: Workspace.LED.DangdutScreen (with SurfaceGui)
+Attributes = {
+    UI_Type = "NowPlaying",       -- (String) "NowPlaying" | "Shoutout"
+    UI_ZoneID = "dangdut",        -- (String) Which zone
+    UI_RefreshRate = 0.5          -- (Number) Update interval (seconds)
+}
+```
+
+---
+
+### **10.3. Builder Workflow (Zero Code)**
+
+**Step 1: Create Model**
+
+```
+Builder creates: Workspace.Stages.RockStage
+```
+
+**Step 2: Add Attributes (via Studio Properties)**
+
+```
+Zone_ID: "rock"
+Zone_DisplayName: "Rock Zone"
+Spawn_Position: Vector3.new(0, 5, 0)
+```
+
+**Step 3: Test**
+
+```
+Script auto-detects → Zone registered → Players can teleport
+```
+
+**NO CODE TOUCH REQUIRED** ✅
+
+---
+
+### **10.4. Scripter Contract (Validation)**
+
+**All modules MUST validate attributes on Init:**
+
+```lua
+-- Server/Business/ZoneModule/init.lua
+local ZoneModule = {}
+local Logger
+local ServerKernel
+
+function ZoneModule:Init()
+    ServerKernel = require(script.Parent.Parent.Parent.init)
+    Logger = ServerKernel:GetModule("Logger")
+    self:ScanZones()
+end
+
+function ZoneModule:ScanZones()
+    local stages = workspace:WaitForChild("Stages")
+
+    for _, stage in ipairs(stages:GetChildren()) do
+        local zoneID = stage:GetAttribute("Zone_ID")
+        local displayName = stage:GetAttribute("Zone_DisplayName")
+        local spawnPos = stage:GetAttribute("Spawn_Position")
+
+        -- VALIDATION (Builder Contract)
+        if not zoneID then
+            Logger:Error("ZoneModule", "ZONE", "Missing Zone_ID attribute", {
+                Model = stage.Name
+            })
+            continue
+        end
+
+        if not displayName then
+            Logger:Warn("ZoneModule", "ZONE", "Missing Zone_DisplayName, using Zone_ID", {
+                Model = stage.Name
+            })
+            displayName = zoneID
+        end
+
+        -- Register zone
+        self.Zones[zoneID] = {
+            Model = stage,
+            DisplayName = displayName,
+            SpawnPosition = spawnPos or stage.PrimaryPart.Position
+        }
+
+        Logger:Info("ZoneModule", "ZONE", string.format(
+            "Registered zone: %s (%s)", zoneID, displayName
+        ))
+    end
+end
+```
+
+---
+
+### **10.5. Attribute Contract Documentation**
+
+**Create:** `docs/AttributeContract.md`
+
+```markdown
+# 🏗️ Attribute Contract for Builders
+
+## Zone System
+
+### Required Attributes
+
+-   `Zone_ID` (String): Unique identifier (lowercase, no spaces)
+-   `Zone_DisplayName` (String): Name shown in UI
+
+### Optional Attributes
+
+-   `Spawn_Position` (Vector3): Custom spawn point
+-   `Spawn_Priority` (Number): Default spawn (1 = highest)
+
+### Example Setup
+
+1. Create model: `Workspace.Stages.DangdutStage`
+2. Add attributes:
+    - Zone_ID: `"dangdut"`
+    - Zone_DisplayName: `"Dangdut Zone"`
+3. Test: Join game → Zone appears in UI
+
+## Audio System
+
+### Required Attributes (for Speaker Parts)
+
+-   `Audio_Side` (String): `"L"` or `"R"` or `"C"`
+-   `Audio_ZoneID` (String): Must match a Zone_ID
+
+### Optional Attributes
+
+-   `Audio_MaxDistance` (Number): Spatial audio range (default: 100)
+```
+
+---
+
+### **10.6. Benefits**
+
+✅ **Builder Independence:** Builder bisa test tanpa nunggu scripter.
+✅ **Type Safety:** Attribute validation di script, bukan runtime error.
+✅ **Documentation:** Contract jadi single source of truth.
+✅ **Hot Reload:** Ganti attribute → auto update (no reboot).
+✅ **AI Future-Proof:** AI bisa generate attribute setup dari natural language.
+
+---
+
 ## **🚨 CRITICAL RULES FOR AI ASSISTANTS (Update V4.1)**
+
+**(NOTE: Referensi utama AI adalah `00-Blueprint-AI-Doctrine.md`. Ini adalah rangkuman teknis.)**
 
 **❌ NEVER:**
 
@@ -336,23 +959,23 @@ end
 **✅ ALWAYS (The Delivery Standard):**
 
 -   **(NEW) Deliver the Fix:** Rangkum semua perubahan ke dalam **satu _bash_ script** (Sesuai Decision #7).
--   **(NEW) Pathing:** Selalu gunakan _full_ path relatif (`src/Server/...`).
+-   **(NEW) Pathing:** Selalu gunakan _full_ path relatif (`src/Server/Business/...`).
 -   **(NEW) Safety:** Sertakan **Backup**, **Action (cat << EOF)**, **Audit**.
 -   Use `GetModule()` to access other modules.
--   Use **relative paths** (`require(script.Parent.Parent.init)`) for internal modules.
+-   Use **relative paths** (`require(script.Parent.Parent.Parent.init)`) for internal modules.
 -   ONLY use **full paths** (`require(game.ServerScriptService.Server.init)`) for 3rd-party addons.
 
 ---
 
-## **📦 MODULE TEMPLATE LIBRARY**
+## **📦 MODULE TEMPLATE LIBRARY (Update V4.2)**
 
-### **Custom Module Template (`Server/MyModule/init.lua`):**
+### **Custom Module Template (`Server/Business/MyModule/init.lua`):**
 
 ```lua
 local ModuleName = {}
 
--- UPDATED: Get Kernel via relative path
-local ServerKernel = require(script.Parent.Parent.init)
+-- [UPDATE V4.2]: Get Kernel via relative path (3 levels up)
+local ServerKernel = require(script.Parent.Parent.Parent.init)
 -- Example: Get Shared Kernel
 local SharedKernel = require(game:GetService("ReplicatedStorage").Shared.init)
 
@@ -368,7 +991,8 @@ function ModuleName:Init()
     RemoteWrapper = SharedKernel:GetModule("RemoteWrapper")
 
     if Logger then
-        Logger:Info("[ModuleName] Initialized")
+        -- [UPDATE V4.2]: New Logger Standard
+        Logger:Info("ModuleName", "❓", "ModuleName Initialized")
     end
 end
 
@@ -378,59 +1002,15 @@ return ModuleName
 
 ---
 
-## **📋 FILE STRUCTURE REFERENCE (V4.1)**
+## **📋 FILE STRUCTURE REFERENCE (DEPRECATED V4.1)**
 
-This is the **target structure** this ADR is built for.
+Struktur file di bawah ini **SUDAH DIGANTIKAN** oleh **Decision #9.1 (Domain Hierarchy)**.
 
-```bash
-src/
-├── Server/
-│   ├── init.lua          # Main Server Kernel
-│   ├── Config.lua        # Core Module (Phase 1)
-│   ├── Logger.lua        # Core Module (Phase 1)
-│   ├── AdminModule/
-│   │   └── init.lua
-│   ├── MusicModule/
-│   │   └── init.lua
-│   ├── ZoneModule/
-│   │   └── init.lua
-│   ├── DataModule/       # (V4.1+) New Module
-│   │   └── init.lua
-│   ├── SalamModule/      # (V4.1+) New Module
-│   │   └── init.lua
-│   ├── MonetizationModule/ # (V4.1+) New Module
-│   │   └── init.lua
-│   └── KohlsAdminAddons/
-│       └── MusicCommands.server.lua # [STATUS: ABANDONED V4.1]
-│
-├── Shared/
-│   ├── init.lua          # Main Shared Kernel
-│   ├── Theme.lua         # Core Module (Phase 1)
-│   ├── TextFilter/     # (V4.1+) New Module
-│   │   └── init.lua
-│   ├── OVHL_UI/
-│   │   └── init.lua
-│   │   ├── ...
-│   └── Network/
-│       ├── init.lua
-│       ├── ...
-│
-└── Client/
-    ├── init.lua          # Main Client Kernel
-    ├── Responsive.lua    # Core Module (Phase 1)
-    ├── TopbarIntegration/
-    │   └── init.lua
-    ├── UIModule/
-    │   └── init.lua
-    ├── ZoneModule/
-    │   └── init.lua
-    └── WorldUIModule/    # (V4.1+) New Module
-        └── init.lua
-```
+---
 
 ### **Rojo `default.project.json` (V4.1.1)**
 
-Ini adalah _mapping_ Rojo yang **WAJIB** digunakan untuk proyek ini. AI harus menggunakan _path_ ini sebagai _ground truth_.
+Ini adalah _mapping_ Rojo yang **WAJIB** digunakan untuk proyek ini. AI harus menggunakan _path_ ini sebagai _ground truth_. (Mapping ini tetap valid bahkan setelah Decision #9, karena kita tetap map folder `src/Server` utamanya).
 
 ```json
 {
@@ -448,7 +1028,7 @@ Ini adalah _mapping_ Rojo yang **WAJIB** digunakan untuk proyek ini. AI harus me
                 "Config": {
                     "$className": "Configuration",
                     "Addons": {
-                        "$path": "src/Server/KohlsAdminAddons"
+                        "$path": "src/Server/Legacy/KohlsAdminAddons"
                     }
                 }
             }
@@ -482,7 +1062,8 @@ Ini adalah _mapping_ Rojo yang **WAJIB** digunakan untuk proyek ini. AI harus me
 ```lua
 function SafeFunction(player, data)
     if not player or not player:IsA("Player") then
-        warn("[SafeFunction] Invalid player")
+        -- [UPDATE V4.2] Gunakan Logger
+        Logger:Warn("MyModule", "❓", "Invalid player passed to SafeFunction")
         return nil
     end
 end
@@ -496,7 +1077,8 @@ function TryDangerousOperation()
         return DangerousOperation()
     end)
     if not success then
-        warn("[ERROR] Operation failed:", result)
+        -- [UPDATE V4.2] Gunakan Logger
+        Logger:Error("MyModule", "❓", "Operation failed", { error = result })
         return FallbackOperation()
     end
     return result
@@ -508,43 +1090,31 @@ end
 
 ---
 
-### **Error Logging Standard (V4.1 FIX)**
+### **Error Logging Standard (V4.2 FIX)**
 
-> **[UPDATE V4.1] Logger Fix (CRITICAL FIX)**
+> **[UPDATE V4.2] Logger Fix (CRITICAL FIX)**
 >
-> **Context:** `Logger v3` _cache_ `EnableVerboseLogs`, membuatnya _stuck_.
+> **Context:** `Logger v3` (di V4.1) _cache_ `EnableVerboseLogs`, membuatnya _stuck_.
 >
-> **Decision (Logger v4):** Hapus _local cache_. Fungsi Logger harus membaca `Config` secara **langsung**.
->
-> **Implementation Pattern (V4.1):**
->
-> ```lua
-> -- Di dalam Logger.lua
-> local Config -- Di-require di atas
->
-> function Logger:Info(moduleName, ...)
->     -- Membaca Config langsung
->     if not Config.Debug.EnableVerboseLogs then return end
->     local message = string.format(...)
->     print(string.format(LOG_TEMPLATE, "🖥️ SERVER", moduleName, message))
-> end
-> ```
+> **Decision (Logger v4.2):** Hapus _local cache_. Fungsi Logger (seperti `ShouldLog` di Decision #8.4) harus membaca `Config` secara **langsung** setiap kali dipanggil. Ini memastikan perubahan `Config.lua` langsung aktif tanpa perlu _restart_ server.
 
 ---
 
 ## **📚 GLOSSARY**
 
-| Term               | Definition                                                                   |
-| :----------------- | :--------------------------------------------------------------------------- |
-| **Kernel**         | The main `init.lua` (Server/Client/Shared) that manages module loading.      |
-| **Init()**         | Initialization function called by the Kernel _after_ all modules are loaded. |
-| **GetModule()**    | Function on the Kernel to safely access other modules.                       |
-| **RemoteWrapper**  | Abstraction layer for client-server communication.                           |
-| **PermissionSync** | Bridge between Kohl's Admin and music system permissions.                    |
-| **OVHL UI**        | The centralized UI system for content, modals, and components.               |
+| Term                   | Definition                                                                   |
+| :--------------------- | :--------------------------------------------------------------------------- |
+| **Kernel**             | The main `init.lua` (Server/Client/Shared) that manages module loading.      |
+| **Init()**             | Initialization function called by the Kernel _after_ all modules are loaded. |
+| **GetModule()**        | Function on the Kernel to safely access other modules.                       |
+| **RemoteWrapper**      | Abstraction layer for client-server communication.                           |
+| **PermissionSync**     | (Dulu AdminModule) Bridge for authorization logic.                           |
+| **OVHL UI**            | The centralized UI system for content, modals, and components.               |
+| **Domain**             | (V4.2) Kategori modul: `Core`, `Services`, atau `Business`.                  |
+| **Attribute Contract** | (V4.2) Aturan Atribut (Attributes) untuk workflow Builder-Scripter.          |
 
 ---
 
-**Document Version:** 4.1.1
-**Last Updated:** 2025-11-06
+**Document Version:** 4.2
+**Last Updated:** 2025-11-07
 **Status:** Production Ready ✅
