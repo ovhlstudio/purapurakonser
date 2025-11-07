@@ -1,0 +1,189 @@
+# Selene Configuration for Pura Pura Pesta
+# Roblox Lua Style Guide & Best Practices
+
+[config]
+# Roblox-specific configuration
+roblox = true
+# Include test files in linting
+include = ["**/*.lua", "**/*.luau"]
+# Exclude dependencies and generated files
+exclude = ["packages/**", "lokal/backups/**"]
+
+# Global variables that are predefined by Roblox
+globals = [
+    # Roblox Services
+    "game",
+    "workspace",
+    "script",
+    "shared",
+    
+    # Roblox API
+    "Instance",
+    "Vector3",
+    "CFrame",
+    "Color3",
+    "UDim2",
+    "UDim",
+    "Enum",
+    "TweenInfo",
+    "BrickColor",
+    
+    # Roblox Types
+    "Player",
+    "Part",
+    "Model",
+    "Folder",
+    "Script",
+    "LocalScript",
+    "ModuleScript",
+    "RemoteEvent",
+    "RemoteFunction",
+    "Sound",
+    "ScreenGui",
+    "TextButton",
+    "TextLabel",
+    "Frame",
+    
+    # Roblox Standard Libraries
+    "require",
+    "print",
+    "warn",
+    "error",
+    "assert",
+    "type",
+    "typeof",
+    "pairs",
+    "ipairs",
+    "next",
+    "select",
+    "getmetatable",
+    "setmetatable",
+    "rawget",
+    "rawset",
+    "rawequal",
+    "tonumber",
+    "tostring",
+    
+    # Roblox Runtime
+    "wait",
+    "task",
+    "task.wait",
+    "task.delay",
+    "task.spawn",
+    "task.defer",
+    "coroutine",
+    
+    # HTTP Service
+    "HttpService",
+    "http_service",
+    
+    # DataStore
+    "DataStoreService",
+    
+    # Our Custom Globals (OVHL System)
+    "OVHLUI",
+    "MusicManager",
+    "RemoteWrapper",
+    "PermissionSync"
+]
+
+# Lint rules configuration
+[lints]
+# =========== CODE STYLE ===========
+empty_if = "warning"
+empty_while = "warning"
+misleading_continue = "warning"
+multiple_statements = "warning"
+no_unknown_globals = "error"
+redundant_parameter = "warning"
+redundant_value = "warning"
+shadowing = "warning"
+unused_variable = "warning"
+unused_function = "warning"
+unused_label = "warning"
+unreachable_code = "error"
+
+# =========== ROBLOX-SPECIFIC ===========
+# Allow Roblox-style OOP patterns
+discard_returns = "allow"
+inconsistent_digit_grouping = "allow"
+infinite_loop = "allow"
+max_line_length = "allow"  # Roblox Studio handles this
+no_unknown_doc_params = "allow"  # Roblox doesn't use standard LuaDoc
+
+# =========== STRICT CHECKS ===========
+compare_nan = "error"
+duplicate_key = "error"
+duplicate_value = "error"
+global_usage = "warning"
+illegal_global_usage = "error"
+incorrect_standard_library_use = "warning"
+invalid_identifier = "error"
+invalid_settings = "error"
+missing_identifier = "error"
+missing_return = "warning"
+pointless_call = "warning"
+pointless_statement = "warning"
+shadowing_upvalue = "warning"
+spell_check = "allow"  # Disable spell check for variable names
+undefined_variable = "error"
+uninitialized_variable = "warning"
+unused_index = "warning"
+
+# =========== TYPE CHECKING ===========
+# Roblox Lua is dynamically typed, so we're lenient here
+type_check_annotation = "allow"
+type_check_arguments = "allow"
+type_check_operation = "allow"
+type_check_return = "allow"
+
+# =========== SECURITY ===========
+# Important for Roblox security
+unsafe_script = "warning"  # Warn about potential security issues
+
+# =========== PERFORMANCE ===========
+# Performance-related lints
+table_literal = "allow"  # Allow table constructors
+variable_capture = "allow"  # Common in Roblox event handlers
+
+# =========== FORMATTING ===========
+# Formatting is handled by Rojo/Roblox Studio
+trailing_whitespace = "warning"
+indentation = "allow"  # Let Roblox Studio handle indentation
+line_endings = "allow"  # Let Git handle line endings
+
+# =========== ROBLOX BEST PRACTICES ===========
+# Custom rules for Roblox development
+[lint.roblox]
+# Warn about using wait() instead of task.wait()
+deprecated_wait = "warning"
+# Warn about using old event system
+legacy_events = "warning"
+# Allow Roblox-specific patterns
+allow_self_in_module = true
+allow_uppercase_variables = true  # For constants like MAX_PLAYERS
+
+# Ignore specific patterns that are common in Roblox
+[ignore]
+# Ignore Kohl's Admin and TopbarPlus code
+files = ["**/Kohl's Admin/**", "**/TopbarPlus/**"]
+# Ignore auto-generated files
+codes = [
+    "unused_variable",  # In placeholder code
+    "unused_function",  # In placeholder code
+    "global_usage",     # For global event handlers
+]
+
+# Diagnostics configuration
+[diagnostics]
+# Make errors more visible
+color = true
+# Show explanation for each lint
+explain = true
+# Show the source of each lint
+show_source = true
+
+# Plugin configuration (if using any plugins)
+[plugins]
+# Example: If using a Roblox-specific plugin
+# roblox = { path = "path/to/roblox-plugin" }

@@ -1,0 +1,36 @@
+{
+  "name": "PuraPuraPesta",
+  "tree": {
+    "$className": "DataModel",
+
+    "ServerScriptService": {
+      "Server": {
+        "$path": "src/Server"
+      },
+
+      "Kohl's Admin": {
+        "$className": "Folder",
+        "Config": {
+          "$className": "Configuration",
+          "Addons": {
+            "$path": "src/Server/KohlsAdminAddons"
+          }
+        }
+      }
+    },
+
+    "ReplicatedStorage": {
+      "Shared": {
+        "$path": "src/Shared"
+      }
+    },
+
+    "StarterPlayer": {
+      "StarterPlayerScripts": {
+        "Client": {
+          "$path": "src/Client"
+        }
+      }
+    }
+  }
+}

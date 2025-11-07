@@ -1,0 +1,19 @@
+# Roblox Studio
+*.rbxlx.lock
+*.rbxl
+*.rbxm
+
+# lokal
+lokal/
+package/
+node_module/
+# VS Code
+.vscode/
+*.code-workspace
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
