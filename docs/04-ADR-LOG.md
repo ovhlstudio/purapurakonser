@@ -1,6 +1,8 @@
-# 🏛️ 02 - ADR Log (Catatan Perubahan Arsitektur)
+# 🏛️ 04 - ADR LOG (Catatan Perubahan Arsitektur)
 
-**Tujuan:** Mencatat _kenapa_ dan _kapan_ keputusan arsitektur (ADR) diubah.
+**Versi:** 1.0.0
+**Status:** FINAL
+**Tujuan:** Mencatat _kenapa_ dan _kapan_ keputusan arsitektur (ADR) di `01-ARCHITECTURE.md` diubah.
 **Aturan:** Entri terbaru SELALU di paling atas (Reverse Chronological).
 
 ---
