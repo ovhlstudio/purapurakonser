@@ -1,6 +1,6 @@
 # 🛡️ 00 - GAME DESIGN (VISI & FITUR)
 
-**Versi:** 1.0 (Refactored)
+**Versi:** 1.0.0
 **Status:** FINAL
 **Tujuan:** Dokumen ini adalah "Kitab Suci" (Single Source of Truth) untuk **Visi Proyek** dan **Pilar Gameplay**. Dokumen ini mendefinisikan _APA_ yang kita bangun.
 
@@ -28,7 +28,7 @@ Dokumen ini mendefinisikan _gameplay loop_ fundamental, pilar, dan visi masa dep
 -   **Zone Filtering:** Setiap zona HANYA akan memutar lagu yang diizinkan untuk zona tersebut (berdasarkan `ZoneID` atau `ZoneName` di data lagu).
 -   **World UI (LED/Video Tron):**
     -   LED panggung (SurfaceGUI) akan menyiarkan `NOW PLAYING` (Judul Lagu, Artis) secara _real-time_.
-    -   _Logic_ ini akan ditangani oleh `Client/WorldUIModule` yang mendengarkan _event_ `UpdateUI`.
+    -   _Logic_ ini akan ditangani oleh `Client/OVHL_Modules/WorldUIModule` yang mendengarkan _event_ `UpdateUI`.
     -   LED ini juga akan diinterupsi oleh siaran "Kirim Salam" (lihat Pillar 2).
 
 ### Pillar 2: UI & Interaction (OVHL UI)
@@ -40,30 +40,30 @@ Dokumen ini mendefinisikan _gameplay loop_ fundamental, pilar, dan visi masa dep
 -   **Individual Volume (Client-Side):**
     -   Fitur `SetGlobalVolume` (Server-Side) **DITIADAKAN** karena menyebabkan _bug_.
     -   Volume _server_ akan dipaten 100%.
-    -   Player (termasuk non-role) bisa mengatur _volume individual_ mereka sendiri via _slider_ di `OVHL UI` yang mengontrol properti `.Volume` _sound_ di _client_ mereka.
+    -   Player (termasuk non-role) bisa mengatur _volume individual_ mereka sendiri via _slider_ di `OVHL UI` yang mengontrol properti `.Volume` _sound_ di _client_ mereka (via `Client/Services/AudioModule`).
 -   **Fitur "Kirim Salam" (Shout-out):**
     -   Player bisa mengirim pesan untuk ditampilkan di LED panggung.
     -   **Keamanan (Wajib):** Semua pesan _wajib_ difilter menggunakan `TextService:FilterStringAsync()` (Native Roblox Filter) _sebelum_ di-broadcast.
-    -   **Logic Antrian (Client-Side):** `Client/WorldUIModule` akan memiliki _queue_ (antrian). LED akan menampilkan `NOW PLAYING` secara _default_. Jika ada "Salam" di _queue_, LED akan menampilkan "Salam" selama X detik, lalu kembali ke `NOW PLAYING`.
+    -   **Logic Antrian (Client-Side):** `Client/OVHL_Modules/WorldUIModule` akan memiliki _queue_ (antrian). LED akan menampilkan `NOW PLAYING` secara _default_. Jika ada "Salam" di _queue_, LED akan menampilkan "Salam" selama X detik, lalu kembali ke `NOW PLAYING`.
     -   **Logic Monetisasi (Wajib):** _Workflow_ wajib **"Beli Dulu Baru Tulis"**. Player harus menyelesaikan transaksi (via `MonetizationModule`) _sebelum_ UI untuk mengetik pesan muncul, untuk mencegah _spam antrian_.
 
 ### Pillar 3: Permission, Data & Monetization
 
 -   **Permissions (Kontrol Musik):**
-    -   Hanya _role_ tertentu (via `PermissionSync`) yang bisa menggunakan _Media Controls_ (Play, Pause, Stop, Next).
+    -   Hanya _role_ tertentu (via `PermissionSync:GetRole()`) yang bisa menggunakan _Media Controls_ (Play, Pause, Stop, Next).
     -   Player biasa (tanpa _role_) tombolnya akan di-_disable_.
 -   **Player Persistence (DataStore):**
     -   Sistem akan menyimpan data player menggunakan `Server/Services/DataModule/init.lua` (wrapper DataStore).
-    -   **Data Awal:** `LastKnownZone`. Player yang _rejoin_ akan langsung di-_spawn_ ke zona terakhir tersebut, tidak lagi di "Zona Luar".
-    -   **Future-Proof:** Modul ini akan dipakai untuk menyimpan data _playtime_, _badge_, dll.
+-   **Data Awal:** `LastKnownZone`. Player yang _rejoin_ akan langsung di-_spawn_ ke zona terakhir tersebut, tidak lagi di "Zona Luar".
+    -   **Future-Proof:** Modul ini akan dipakai untuk menyimpan `InternalRole` (fallback), _playtime_, _badge_, dll.
 -   **Monetization & Bypass (Future-Proof):**
     -   Akan ada `Server/Services/MonetizationModule/init.lua` untuk _gamepass_ dan _dev products_.
-    -   **Config Flag (Wajib):** Semua fitur berbayar (Request Lagu, Kirim Salam) _wajib_ memiliki _toggle_ `true/false` di `Server/Config.lua`.
-    -   **Permission Bypass (Wajib):** _Logic_ pembayaran **WAJIB** di-_skip_ jika player memiliki _role_ (dicek via `PermissionSync:CanPlayerDo(...)`).
+    -   **Config Flag (Wajib):** Semua fitur berbayar (Request Lagu, Kirim Salam) _wajib_ memiliki _toggle_ `true/false` di `Server/Config.lua` (global).
+    -   **Permission Bypass (Wajib):** _Logic_ pembayaran **WAJIB** di-_skip_ jika `PermissionSync:GetRole(player)` me-return role yang diizinkan (misal: "OVHL_Admin").
 
 ---
 
 ## 3. 🚀 Future Vision (Visi Masa Depan)
 
--   **Lighting System:** Akan ada implementasi `LightingSystem`. Sistem ini (mungkin) akan terintegrasi dengan `MusicModule` untuk menciptakan koreografi lampu panggung yang sinkron dengan _genre_ lagu (e.g., _slow_, _rock_, _koplo_).
--   **VoteToSkip & RequestSong:** Fitur-fitur ini (yang sudah ada di ADR) akan diintegrasikan penuh ke UI, termasuk _logic_ pembayaran untuk `RequestSong`.
+-   **Lighting System:** Akan ada implementasi `Server/Services/LightingModule`. Sistem ini (mungkin) akan terintegrasi dengan `OVHL_Modules/MusicModule` untuk menciptakan koreografi lampu panggung yang sinkron dengan _genre_ lagu (e.g., _slow_, _rock_, _koplo_).
+-   **VoteToSkip & RequestSong:** Fitur-fitur ini (yang sudah ada di `Network/Events.lua`) akan diintegrasikan penuh ke UI, termasuk _logic_ pembayaran untuk `RequestSong`.

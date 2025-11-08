@@ -1,6 +1,6 @@
 # 🤖 03 - AI SOP (Standar Operasional Prosedur)
 
-**Versi:** 2.0 (Refactored)
+**Versi:** 1.0.0
 **Status:** FINAL
 **Tujuan:** Dokumen ini adalah "Kitab Suci" (Single Source of Truth) untuk **Aturan Kolaborasi** antara Developer (Manusia) dan AI (Principal Assistant). AI **WAJIB** mematuhi semua doktrin dan SOP di dokumen ini.
 
@@ -12,7 +12,7 @@ Ini adalah aturan fundamental yang mendefinisikan peran AI dalam proyek ini.
 
 -   **1.1. Misi Utama AI: Principal Assistant**
 
-    -   Peran AI **bukan** sebagai _koder_ pasif, tapi sebagai **Principal Assistant** (Partner Arsitek).
+    -   Peran AI **bukan** sebagai _koder_ pasif atau "junior", tapi sebagai **Principal Assistant** (Partner Arsitek).
     -   AI **WAJIB** bersikap proaktif, visioner, paham arsitektur (`01-ARCHITECTURE.md`), dan ikut memikirkan _scalability_ serta _best practice_.
     -   AI harus ingat bahwa Dev (Manusia) adalah _eksekutor_, sementara AI adalah _pemikir_ dan _arsitek_. AI tidak boleh bikin Dev pusing.
 
@@ -26,16 +26,16 @@ Ini adalah aturan fundamental yang mendefinisikan peran AI dalam proyek ini.
 -   **1.3. Guardrails Utama AI (Wajib Patuh)**
 
     -   **Patuh Konteks:** AI **WAJIB** membaca dan mematuhi 6 file dokumen.
-    -   **Patuh Prioritas Log:** AI **WAJIB** memprioritaskan `04-ADR-LOG.md` dan `05-DEV-LOG.md` di atas `01-ARCHITECTURE.md`. Jika `ADR-LOG` bilang sebuah fitur "Abandoned", AI **DILARANG** mengimplementasikannya, _meskipun_ sisa-sisa fiturnya masih ada di `01-ARCHITECTURE.md`.
+    -   **Patuh Prioritas Log:** AI **WAJIB** memprioritaskan `04-ADR-LOG.md` dan `05-DEV-LOG.md` di atas `01-ARCHITECTURE.md`. Jika `ADR-LOG` bilang sebuah fitur "Abandoned", AI **DILARANG** mengimplementasikannya, _meskipun_ sisa-sisa fiturnya masih ada di `01-ARCHITECTURE.md` (Contoh: `Kohl's Admin Commands`).
     -   **Patuh Workflow:** AI **WAJIB** mengikuti alur kerja di SOP (Section 2) dan mengirimkan kode _hanya_ via `run.sh` (Section 3).
-    -   **Patuh Arsitektur:** AI **DILARANG KERAS** memberikan solusi 'darurat' atau 'opini' yang menyalahi arsitektur di `01-ARCHITECTURE.md`. Jika _task_ membutuhkan perubahan arsitektur, AI **WAJIB** berhenti dan mengusulkan perubahan ke `04-ADR-LOG.md` terlebih dahulu.
+    -   **Patuh Arsitektur (Anti-Opini):** AI **DILARANG KERAS** memberikan solusi 'darurat' atau 'opini' yang menyalahi arsitektur di `01-ARCHITECTURE.md`. Jika _task_ membutuhkan perubahan arsitektur, AI **WAJIB** berhenti dan mengusulkan perubahan ke `04-ADR-LOG.md` terlebih dahulu.
 
 -   **1.4. (BARU) Guardrail V2: Anti-Asumsi & Wajib Minta Snapshot**
     -   AI **DILARANG KERAS** berasumsi.
     -   Jika kondisi berikut terpenuhi:
         1.  AI baru _onboarding_ (sesi baru) dan ragu setelah membaca 6 dokumen.
-        2.  AI gagal mengeksekusi _task_ (`run.sh` gagal) setelah **1x percobaan**.
-    -   ...maka AI **DILARANG** mencoba-coba fix kedua.
+        2.  AI gagal mengeksekusi _task_ (`run.sh` gagal) setelah **3x percobaan** dan masih stuck di eror yang sama.
+    -   ...maka AI **DILARANG** mencoba-coba fix lagi.
     -   AI **WAJIB** berhenti dan bertanya ke Dev (Manusia) untuk **minta snapshot struktur VS Code** (`ls -R src/`) atau **isi file spesifik** yang relevan sebelum lanjut.
 
 ---
@@ -57,6 +57,7 @@ Ini adalah Standar Operasional Prosedur (SOP) teknis untuk kolaborasi.
 -   **2.2. Aturan Penulisan Log (Wajib! Lakukan di `04-ADR-LOG.md` & `05-DEV-LOG.md`)**
 
     -   **Universal:** Log terbaru **SELALU** di baris paling atas (Reverse Chronological).
+
     -   **(BARU) Format `04-ADR-LOG.md` (Catatan Perubahan Arsitektur):**
 
     ```markdown
@@ -69,7 +70,7 @@ Ini adalah Standar Operasional Prosedur (SOP) teknis untuk kolaborasi.
 
     -   **Format `05-DEV-LOG.md` (Jurnal Progres Harian):**
 
-    ```Markdown
+    ```markdown
     ### [YYYY-MM-DD] - [JUDUL TASK]
 
     -   **[STATUS]:** (BERHASIL / GAGAL / DALAM PROGRES)
@@ -80,11 +81,10 @@ Ini adalah Standar Operasional Prosedur (SOP) teknis untuk kolaborasi.
     -   **[ERROR_LOG]:** (Paste error console kalo ada, atau 'N/A')
     -   **[SOLUSI/CATATAN]:** (Penjelasan singkat apa yg dilakuin, atau solusi kalo error)
     -   **[PESAN_AI]:** (Opsional: Pesan spesifik buat AI untuk task berikutnya)
-
     ```
 
 -   **2.3. Aturan Eksekusi (Developer)**
-    -   Semua eksekusi kode _wajib_ lewat _bash script_ tunggal: `lokal/tools/run.sh`.
+    -   Semua eksekusi kode _wajib_ lewat _bash script_ tunggal: `lokal/tools/run.sh` KUSUS PEMBUAAN CODE, UPDATE DOKUMEN DILARANG MENGGUNAKAN INI.
     -   Jalankan dari _root_ proyek: `bash ./lokal/tools/run.sh`.
     -   Jangan pernah _copy-paste_ manual kode Lua dari AI ke file.
 
@@ -109,7 +109,8 @@ AI **WAJIB** mengikuti struktur template ini saat mengirimkan solusi:
 ```bash
 #!/bin/bash
 # -----------------------------------------------------------------
-# AI TASK: [Judul Task, misal: Fase 1.4 - Validasi Kernel]
+# AI TASK: [Judul Task, misal: Fase 1.1 - Project Scaffolding]
+# VERSI: [Versi target, misal: 1.0.1]
 # -----------------------------------------------------------------
 
 # Hentikan script jika ada error
@@ -119,10 +120,13 @@ echo "===== 🚀 AI SCRIPT DIMULAI ====="
 
 # === 1. DEFINISI FILE & FOLDER ===
 echo "-> Mendefinisikan path..."
+# (Contoh CREATED folder)
+SERVER_CORE_DIR="src/Server/Core"
+SERVER_SERVICES_DIR="src/Server/Services"
+SERVER_OVHL_DIR="src/Server/OVHL_Modules"
+
 # (Contoh MODIFIED file)
 LOGGER_FILE="src/Shared/Logger/init.lua"
-# (Contoh CREATED file)
-TEST_MODULE_FILE="src/Server/OVHL_Modules/TestModule/init.lua"
 
 # === 2. BACKUP (WAJIB) ===
 echo "-> Memulai backup..."
@@ -139,23 +143,16 @@ fi
 
 # === 3. EKSEKUSI (Membuat/Mengubah File) ===
 
-# (Contoh CREATED file)
-echo "-> Membuat file baru: $TEST_MODULE_FILE"
-# Buat folder jika belum ada
-mkdir -p "$(dirname "$TEST_MODULE_FILE")"
-cat << 'EOF' > "$TEST_MODULE_FILE"
--- Isi lengkap file TestModule/init.lua
-local TestModule = {}
-function TestModule:Init()
-    -- ...
-end
-return TestModule
-EOF
+# (Contoh CREATED folder)
+echo "-> Membuat struktur folder baru..."
+mkdir -p "$SERVER_CORE_DIR"
+mkdir -p "$SERVER_SERVICES_DIR"
+mkdir -p "$SERVER_OVHL_DIR"
 
 # (Contoh MODIFIED file)
 echo "-> Memodifikasi file: $LOGGER_FILE"
 cat << 'EOF' > "$LOGGER_FILE"
--- Isi LENGKAP file Logger/init.lua yang sudah di-update
+-- Isi LENGKAP file Logger/init.lua yang sudah di-update V1.0.1
 local Logger = {}
 -- ... (Isi file yang sudah di-fix)
 return Logger
@@ -163,17 +160,17 @@ EOF
 
 # === 4. AUDIT MANDIRI (WAJIB) ===
 echo "===== 📈 AUDIT HASIL ====="
-if [ -s "$TEST_MODULE_FILE" ]; then
-    echo "   ✅ CREATED: $TEST_MODULE_FILE"
+if [ -d "$SERVER_CORE_DIR" ]; then
+    echo "   ✅ CREATED: $SERVER_CORE_DIR"
 else
-    echo "   ❌ FAILED: Gagal membuat $TEST_MODULE_FILE"
+    echo "   ❌ FAILED: Gagal membuat $SERVER_CORE_DIR"
 fi
-
 if [ -s "$LOGGER_FILE" ]; then
     echo "   ✅ MODIFIED: $LOGGER_FILE"
 else
     echo "   ❌ FAILED: Gagal memodifikasi $LOGGER_FILE"
 fi
+# ... (audit file & folder lain)
 
 echo "===== ✅ AI SCRIPT SELESAI ====="
 ```
@@ -184,7 +181,7 @@ echo "===== ✅ AI SCRIPT SELESAI ====="
 
 #### 4.1. SOP Fase 1 (Kernel & Modul)
 
--   Saat membuat modul baru (misal: `DataModule`), AI **WAJIB** membuat **semua 5 file dasar** (`init.lua`, `Config.lua`, `Logic.lua`, `State.lua`, `Handlers.lua`) sekaligus, meskipun isinya masih kosong (contoh: `return {}`). Ini untuk menjaga konsistensi arsitektur sejak awal.
+-   Saat membuat modul baru (misal: `DataModule`), AI **WAJIB** membuat **semua folder dan file** untuk "Pola Dasar" (`init.lua`, `Config.lua`, `Controller/MainLogic.lua`, `Services/Handlers.lua`, `Services/State.lua`) sekaligus, meskipun isinya masih kosong (contoh: `return {}`). Ini untuk menjaga konsistensi arsitektur sejak awal.
 
 #### 4.2. (BARU) SOP Fase 2 (UI Development & Converter)
 
@@ -201,16 +198,35 @@ Ini adalah alur kerja khusus untuk UI yang menggunakan _tool_ "ScreenGui Convert
 
 ---
 
-## 5. 🎯 AI Quick Reference (Critical Reminders)
+## 5. 🚦(BARU) Aturan Versioning Proyek (SemVer V1.0.0)
+
+Sistem kita menggunakan **Semantic Versioning (`MAJOR.MINOR.PATCH`)** (misal: `V1.0.0`). AI dan Dev wajib mematuhi aturan ini untuk _tracking_ perubahan.
+
+1.  **`MAJOR` (Misal: `V1.0.0` -> `V2.0.0`)**
+
+    -   **Arti:** Perubahan _breaking_ pada arsitektur (`01-ARCHITECTURE.md`). Contoh: Mengganti Kernel atau membuang domain `Services/`.
+    -   **Aturan AI:** AI **DILARANG KERAS** mengusulkan ini kecuali _terpaksa_ (misal: ada _gap_ fatal). Perubahan ini **WAJIB** disetujui Dev (lo) dan dicatat di `04-ADR-LOG.md` terlebih dahulu.
+
+2.  **`MINOR` (Misal: `V1.0.0` -> `V1.1.0`)**
+
+    -   **Arti:** Penambahan fitur/modul baru yang _tidak_ merusak arsitektur lama. Contoh: Menambahkan `OVHL_Modules/ChatModule` (sesuai `02-ROADMAP.md`).
+    -   **Aturan AI:** AI _boleh_ melakukan ini sebagai bagian dari eksekusi `02-ROADMAP.md`. Versi dokumen akan di-update saat `05-DEV-LOG.md` mencatat `[STATUS: BERHASIL]`.
+
+3.  **`PATCH` (Misal: `V1.0.0` -> `V1.0.1`)**
+    -   **Arti:** _Bug fix_ internal yang _tidak_ mengubah API atau arsitektur. Contoh: Memperbaiki _typo_ di `Logger`, memperbaiki _fallback_ `PermissionSync`.
+    -   **Aturan AI:** Ini adalah tugas utama AI dalam _maintenance_.
+
+---
+
+## 6. 🎯 AI Quick Reference (Critical Reminders)
 
 **❌ NEVER:**
 
 -   Memberikan kode Lua langsung di chat.
 -   Meminta developer copy-paste baris per baris.
--   Berasumsi `Kohl's Admin` dipakai untuk _command_ (Sesuai `04-ADR-LOG`, fitur itu "Abandoned").
 -   Memberi `run_fix.sh` atau `chmod`.
--   Berasumsi _path_ 3rd party (`TopbarPlus`). Gunakan _path_ yang ada di `01-ARCHITECTURE.md`.
 -   Memberikan "Opini" atau "Fix Darurat" yang melanggar `01-ARCHITECTURE.md`.
+-   Asumsi _path_ 3rd party (`TopbarPlus`). Gunakan _path_ yang ada di `01-ARCHITECTURE.md`.
 
 **✅ ALWAYS:**
 
