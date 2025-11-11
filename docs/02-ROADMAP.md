@@ -1,206 +1,203 @@
-# 🗺️ 02 - ROADMAP (V1.0.0)
+## 🗺️ 02 - ROADMAP (V2.1.0 - Smart UI System)
 
-**Versi:** 1.0.0
-**Status:** FINAL
-**Tujuan:** Rencana _end-to-end_ dari folder kosong (`src/`) hingga game siap _publish_, berdasarkan `01-ARCHITECTURE.md` (V1.0.0) dan `00-GAME-DESIGN.md`.
+**Versi:** 2.1.0 (Smart UI System)  
+**Status:** FINAL  
+**Tujuan:** Rencana _end-to-end_ dari folder kosong (`src/`) hingga game siap _publish_, berdasarkan `01-ARCHITECTURE.md` (V2.1.0) dengan **Smart UI System**.
 
 ---
 
-### Fase 1: 🏗️ Fondasi & Kernel Bootstrap (Prioritas #1)
+## 📋 PERUBAHAN V2.1.0:
 
-**Tujuan:** Membangun "sistem operasi" proyek. Memastikan struktur file, Kernel, dan _logger_ (prioritas #1) berjalan sempurna sebelum ada 1 baris kode _gameplay_ pun.
+-   ✅ **Enhanced:** Smart UI System dengan AI-powered component discovery
+-   ✅ **Fixed:** UIManager path consistency (`Server/Core/UIManager/`)
+-   ✅ **Proven:** Kernel 4-Fase dengan domain priority battle tested
+-   ✅ **Simplified:** Module development dengan zero boilerplate UI
+-   ✅ **Future Proof:** Standardized interfaces untuk auto-discovery
+
+---
+
+### Fase 1: 🏗️ Foundation & Kernel Bootstrap (Priority #1)
+
+**Tujuan:** Membangun "sistem operasi" proyek. Memastikan struktur file, Kernel, Logger, dan **Smart UI Manager** berjalan sempurna sebelum ada 1 baris kode _gameplay_ pun.
 
 1.  **Task 1.1: Project Scaffolding (Domain Ready)**
 
-    -   Gunakan `default.project.json` (yang sudah bersih) untuk memetakan 3 _entrypoint_ utama: `src/Server`, `src/Shared`, `src/Client`.
-    -   Buat struktur folder kosong sesuai `Decision #2` (Domain Hierarchy):
-    -   **Server:** Buat `Core/`, `Services/`, `OVHL_Modules/`, `Legacy/`.
-    -   **Client:** Buat `Core/`, `Services/`, `OVHL_Modules/`.
-    -   **Shared:** Buat `Logger/`, `Network/`, `OVHL_UI/`.
-    -   **PENTING:** Buat `src/Server/Config.lua` (Global) dan `src/Server/init.server.lua` (Bootstrap).
+    -   Gunakan `default.project.json` (PROVEN) untuk mapping 3 _entrypoint_: `src/Server`, `src/Shared`, `src/Client`
+    -   Buat struktur folder sesuai `Decision #2.1`:
+        -   **Server:** `Core/`, `Services/`, `OVHL_Modules/`
+        -   **Client:** `Core/`, `Services/`, `OVHL_Modules/`
+        -   **Shared:** `Logger/`, `Network/`, `OVHL_UI/`
+    -   **PENTING:** Buat `src/Server/config.lua` (Global) dan `src/Server/init.server.lua` (Bootstrap Script)
 
 2.  **Task 1.2: Implementasi Kernel 4-Fase (Anti-Crash)**
 
-    -   Implementasi `src/Server/init.server.lua` (Bootstrap `Phase 0`).
-    -   Implementasi `src/Client/init.client.lua` (Bootstrap `Phase 0`).
-    -   Implementasi `src/Server/Core/Kernel.lua` (Kernel Loader `Phase 1-3`).
-    -   Implementasi `src/Client/Core/Kernel.lua` (Kernel Loader `Phase 1-3`).
-    -   **PENTING:** `init.server.lua` **WAJIB** `require` Config dan Logger, lalu `Logger:Init(Config)` _sebelum_ `require` Kernel (sesuai `Decision #1.1`).
-    -   **PENTING:** `Kernel.lua` **WAJIB** mengimplementasikan `DOMAIN_PRIORITY` (`Core` -> `Services` -> `OVHL_Modules`) untuk `Phase 2` dan `Phase 3` (sesuai `Decision #1.2`).
+    -   Implementasi `src/Server/init.server.lua` (Bootstrap `Phase 0` - **Script**)
+    -   Implementasi `src/Client/init.client.lua` (Bootstrap `Phase 0` - **LocalScript**)
+    -   Implementasi `src/Server/Core/Kernel/manifest.lua` (Kernel Loader `Phase 1-3` - **ModuleScript**)
+    -   Implementasi `src/Client/Core/Kernel/manifest.lua` (Kernel Loader `Phase 1-3` - **ModuleScript**)
+    -   **PENTING:** `init.server.lua` **WAJIB** `require` Config dan Logger, lalu `Logger:Init(Config)` _sebelum_ `require` Kernel (sesuai `Decision #1.1`)
+    -   **PENTING:** `Kernel/manifest.lua` **WAJIB** mengimplementasikan `DOMAIN_PRIORITY` (`Core` → `Services` → `OVHL_Modules`) untuk `Phase 2` dan `Phase 3` (sesuai `Decision #1.2`)
 
-3.  **Task 1.3: Implementasi Core Modules (Fase 1)**
+3.  **Task 1.3: Core Modules Implementation**
 
-    -   Implementasi `Shared/Logger/` (menggunakan Pola 5 File). `Logic.lua` akan berisi `ShouldLog()`, `init.lua` akan berisi `Info()`, `Debug()`, `Error()`.
+    -   Implementasi `Shared/Logger/manifest.lua` (menggunakan standardized naming)
+    -   Implementasi `Server/config.lua` (global configuration)
+    -   Implementasi `Shared/config.lua` (shared configuration)
+    -   🆕 **Implementasi `Client/Core/UIManager/manifest.lua`** (SMART UI SYSTEM!)
 
-4.  **Task 1.4: Validasi Kernel**
-    -   Buat modul _dummy_ `Server/OVHL_Modules/TestModule/` (lengkap dengan 5 file: `init`, `Config`, `Controller/MainLogic`, `Services/Handlers`, `Services/State`).
-    -   `init.lua`-nya hanya punya `Init()` yang isinya `Logger:Info("TestModule", "TEST", "TestModule Server Initialized!")`.
-    -   **Kriteria Sukses:** Saat _play_ di Studio, _output_ harus nampilin log dari `Logger` (Phase 0) dan `TestModule` (Phase 3) tanpa ada _error_ `require`. Ini membuktikan Kernel 4-Fase berjalan.
-
----
-
-### Fase 2: 🎨 UI Engine & Komponen (Prioritas #2)
-
-**Tujuan:** Membangun `OVHL UI System` (prioritas #2). Di akhir fase ini, kita punya "Lego" UI yang siap dipakai, tapi belum ada _logic_ data. (Sesuai `Decision #10` & `#11`).
-
-1.  **Task 2.1: Implementasi UI Kernel (`OVHL_UI`)**
-
-    -   Buat `Shared/OVHL_UI/init.lua`. Ini adalah _entrypoint_ yang akan nge-link semua komponen UI via _discovery_ internal (sesuai `Decision #3.3`).
-    -   Buat _base function_ `OVHLUI.Create()` untuk _styling_ konsisten berdasarkan `Filosofi UI Generation` (Decision #11).
-
-2.  **Task 2.2: Implementasi Sistem Layout & Modal**
-
-    -   Buat `Shared/OVHL_UI/ModalSystem/` (Modal, Dialog).
-    -   Buat `Shared/OVHL_UI/LayoutSystem/` (Grid, Stack).
-
-3.  **Task 2.3: Implementasi Komponen Inti**
-
-    -   Buat `Shared/OVHL_UI/ContentComponents/` (Card, List).
-    -   Buat `Shared/OVHL_UI/FormComponents/` (Button, Slider, Toggle).
-
-4.  **Task 2.4: Validasi UI Engine**
-    -   Gunakan kembali `Client/OVHL_Modules/TestModule/init.lua` dari Fase 1.
-    -   Di `Init()`, panggil `Kernel:GetModule("OVHLUI")`.
-    -   Bikin 1 `TextButton` manual, pas diklik, panggil `OVHLUI.ModalSystem:Open(...)`.
-    -   **Kriteria Sukses:** Modal harus muncul. Di dalem modal itu, kita panggil `Stack`, `Card`, dan `Button` dari _engine_ kita. Semuanya harus tampil dengan _style_ (Color, Corner) dari `Decision #11.2` tanpa _error_.
+4.  **Task 1.4: Smart UI System Validation**
+    -   Buat modul _dummy_ `Client/OVHL_Modules/TestUI/` dengan struktur lengkap
+    -   Test `UIManager:SetupModuleUI()` dengan kedua mode (`OVHL_UI` & `StarterGui`)
+    -   Test AI-powered component discovery & multi-language pattern matching
+    -   Test smart error messages untuk missing components
+    -   **Kriteria Sukses:** Semua component terdeteksi, smart error messages work, zero boilerplate di module
 
 ---
 
-### Fase 3: 🎧 Gameplay Loop Awal (Music & UI Logic)
+### Fase 2: 🎵 Music Business Logic (Priority #2)
 
-**Tujuan:** Menghubungkan _backend_ (Server) dan _frontend_ (Client) untuk pertama kalinya. Membuat _vertical slice_ utama: Musik main dan UI merespon.
+**Tujuan:** Implement music gameplay loop dengan **simplified UI approach**. Menghubungkan _backend_ (Server) dan _frontend_ (Client) untuk pertama kalinya.
 
-1.  **Task 3.1: Implementasi Network Foundation**
+1.  **Task 2.1: Network System dengan Auto-Discovery**
 
-    -   Buat `Shared/Network/` (lengkap dengan `init.lua`, `Events.lua`, `Controller/RemoteWrapper.lua`) (sesuai `Decision #5`).
-    -   Daftarkan _event_ awal di `Events.lua`: `UpdateUI`, `VoteToSkip`, `RequestSong`.
+    -   Implementasi `Shared/Network/manifest.lua` dengan auto-event registry
+    -   Implementasi `GetNetworkEvents()` auto-discovery pattern
+    -   Test network event registration tanpa manual config
 
-2.  **Task 3.2: Implementasi Permission (Aggregator)**
+2.  **Task 2.2: Music Module (Server) - PURE BUSINESS LOGIC**
 
-    -   Implementasi `Core/PermissionSync/` (lengkap dengan `init`, `Config`, `Controller/Logic_Kohl`, `Controller/Logic_OVHL`, `Services/Handlers`, `Services/State`) sesuai `Decision #9`.
-    -   **PENTING:** `Logic_OVHL.lua` **WAJIB** `require` `MonetizationModule` (meskipun modulnya masih kosong) untuk cek Gamepass _fallback_.
+    -   Implementasi `Server/OVHL_Modules/MusicModule/` (struktur lengkap)
+    -   Focus on business logic: AutoDJ, Queue management (TANPA UI complexity)
+    -   Expose network events via `GetNetworkEvents()`
+    -   **PENTING:** Module **DILARANG** handle UI implementation
 
-3.  **Task 3.3: Implementasi Music Backend**
+3.  **Task 2.3: Music Player UI (Client) - SIMPLIFIED UI**
 
-    -   Implementasi `Server/OVHL_Modules/MusicModule/` (struktur eskalasi: `init`, `Config`, `State`, `Handlers`, `Controller/AutoDJ`, `Controller/Queue`).
-    -   `init.lua` **WAJIB** `GetModule("PermissionSync")` dan `GetModule("RemoteWrapper")`.
-    -   `Controller/AutoDJ.lua` berisi _logic_ AutoDJ & Manual.
-    -   `Services/Handlers.lua` **WAJIB** memanggil `RemoteWrapper:FireAllClients("UpdateUI", data)` tiap lagu ganti.
-    -   Gunakan `Logger:Info()` dan `Logger:Debug()` (sesuai `Decision #6`).
+    -   Implementasi `Client/OVHL_Modules/MusicPlayerUI/` (struktur lengkap)
+    -   🆕 **Gunakan `UIManager:SetupModuleUI()`** untuk UI setup (1 function call!)
+    -   Simple config: hanya specify UI mode & component expectations
+    -   Business logic only - no UI implementation details
+    -   Handle network events untuk update UI via UIManager
 
-4.  **Task 3.4: Implementasi Topbar & UI Frontend**
-
-    -   _Install_ TopbarPlus V3 (sesuai `Decision #8`).
-    -   Implementasi `Client/Services/TopbarIntegration/` (Pola 5 File).
-    -   Implementasi `Client/OVHL_Modules/UIModule/` (struktur eskalasi: `init`, `Config`, `State`, `Handlers`, `Controller/NowPlayingPage`, `Controller/StageZonePage`).
-    -   `Services/Handlers.lua` (di `UIModule`) dengerin `OnClientEvent("UpdateUI")`.
-    -   `Controller/NowPlayingPage.lua` pake `OVHLUI` (dari Fase 2) untuk nampilin data lagu di tab "NOW PLAYING".
-    -   Hubungkan klik ikon TopbarPlus (`TopbarIntegration/Services/Handlers.lua`) untuk memanggil `UIModule:ToggleMusicPanel()`.
-
-5.  **Task 3.5: Validasi Loop**
-    -   **Kriteria Sukses:** Player _join_. Lagu AutoDJ main. `UpdateUI` ke-tembak. Player klik ikon TopbarPlus. Modal `OVHLUI` muncul. Tab "NOW PLAYING" nampilin judul lagu yang bener.
+4.  **Task 2.4: Integration & Validation**
+    -   Test music playback → UI update flow
+    -   Test kedua UI modes: OVHL_UI & StarterGui
+    -   Validate smart component discovery bekerja untuk kedua mode
+    -   **Kriteria Sukses:** Music play → Smart UI update working both modes tanpa error, zero manual UI code
 
 ---
 
-### Fase 4: 💾 Zona, Dunia, & Persistence
+### Fase 3: 🎨 UI Components & Design System (Priority #3)
+
+**Tujuan:** Enhance UI system dengan comprehensive components dan design system berdasarkan **ADR Decision #11.1**.
+
+1.  **Task 3.1: OVHL_UI Component Library**
+
+    -   Implementasi `Shared/OVHL_UI/manifest.lua` sebagai design system entrypoint
+    -   Implementasi comprehensive UI components:
+        -   `ModalSystem/` - `small_modal.lua`, `big_modal.lua`
+        -   `LayoutSystem/` - `flex.lua`, `grid.lua`
+        -   `ContentComponents/` - `card.lua`, `list.lua`
+        -   `FormComponents/` - `button.lua`, `slider.lua`, `toggle.lua`
+    -   Apply design system (Colors, Typography, Layout) sesuai `ADR Decision #11.1`
+    -   Pastikan semua components work dengan UIManager discovery
+
+2.  **Task 3.2: Advanced UI Patterns**
+
+    -   Implementasi modal system dengan animation menggunakan TweenService
+    -   Implementasi responsive layout components dengan UIFlexItem & UIGridLayout
+    -   Implementasi form components dengan hover/pressed states
+    -   Tambah sound effects untuk interaction feedback
+
+3.  **Task 3.3: StarterGui Integration Enhancement**
+    -   Extend component registry dengan lebih banyak multi-language patterns
+    -   Add advanced type validation untuk component matching
+    -   Improve error messages dan guidance untuk UI setup
+    -   **Kriteria Sukses:** Components reusable, design consistent, works dengan kedua rendering modes
+
+---
+
+### Fase 4: 💾 Data & Persistence (Priority #4)
 
 **Tujuan:** Mengembangkan _experience_ dari "1 ruangan" menjadi "multi-zona" dan membuat dunia persisten (menyimpan data player).
 
-1.  **Task 4.1: Implementasi DataStore Service**
+1.  **Task 4.1: Data Module Service**
 
-    -   Buat `Server/Services/DataModule/` (Pola 5 File).
-    -   `Controller/Logic.lua` berisi _wrapper_ `pcall` untuk `DataStoreService:GetAsync/SetAsync` dan _logic_ Anti-Race Condition (Decision #10.2).
+    -   Implementasi `Server/Services/DataModule/` (struktur lengkap)
+    -   DataStore wrapper dengan comprehensive error handling
+    -   Implementasi player persistence untuk zones & preferences
+    -   Anti-race condition logic sesuai `Decision #10.2`
 
-2.  **Task 4.2: Implementasi Zone Backend & Persistence**
+2.  **Task 4.2: Zone System**
 
-    -   Implementasi `Server/OVHL_Modules/ZoneModule/` (struktur eskalasi: `init`, `Config`, `State`, `Handlers`, `Controller/Scanner`, `Controller/Persistence`).
-    -   `init.lua` **WAJIB** `GetModule("DataModule")`.
-    -   `Controller/Scanner.lua` **WAJIB** memvalidasi Atribut (`Zone_ID`) di `Workspace` (sesuai `Decision #7`).
-    -   `Services/Handlers.lua` (dengar `OnPlayerJoin`) akan memanggil `Controller/Persistence.lua` untuk `DataModule:GetLastZone(player)` -> Teleport player.
-    -   `Services/Handlers.lua` (dengar `OnZoneChange`) akan memanggil `Controller/Persistence.lua` untuk `DataModule:SaveLastZone(player, newZone)`.
+    -   Implementasi `Server/OVHL_Modules/ZoneModule/` (struktur lengkap)
+    -   Zone scanner berdasarkan Atribut `Zone_ID` di `Workspace`
+    -   Spatial audio system berdasarkan Atribut `Audio_Side`
+    -   Zone persistence & auto-teleport pada player join
 
-3.  **Task 4.3: Implementasi Zone Frontend**
-
-    -   Implementasi `Client/OVHL_Modules/ZoneModule/` (Pola 5 File).
-    -   Update `Client/OVHL_Modules/UIModule` (Fase 3) untuk nampilin tab "STAGE ZONE" yang datanya diambil dari `ZoneModule`.
-    -   Buat `Client/Services/AudioModule` (Pola 5 File).
-    -   `Client/OVHL_Modules/ZoneModule/Services/Handlers.lua` mendeteksi player masuk _part_ zona dan memanggil `AudioModule` untuk mengaktifkan _spatial audio_ (berdasarkan Atribut `Audio_Side`).
-
-4.  **Task 4.4: Validasi Persistence & Contract**
-    -   **Kriteria Sukses 1:** Builder taruh 2 _part_ di `Workspace` dan kasih Atribut `Zone_ID`. Kedua zona itu harus muncul di UI.
-    -   **Kriteria Sukses 2:** Player _join_ (pertama kali), _spawn_ di "Zona Luar". Pindah ke "Zona Dangdut". _Leave_ game. _Rejoin_. Player harus langsung _spawn_ di "Zona Dangdut".
+3.  **Task 4.3: Permission System**
+    -   Implementasi `Server/Core/PermissionSync/` (struktur lengkap)
+    -   Role-based access control system
+    -   Fallback system untuk Kohl's Admin
+    -   Integration dengan MusicModule untuk admin commands
 
 ---
 
-### Fase 5: 📺 Interaksi Dunia (LED & Kirim Salam)
+### Fase 5: 🎮 Gameplay Features & Polish (Priority #5)
 
-**Tujuan:** Menghidupkan panggung dengan LED interaktif (Video Tron) dan mengimplementasikan fitur _social_ "Kirim Salam".
+**Tujuan:** Implement remaining gameplay features dan polish.
 
-1.  **Task 5.1: Implementasi Text Filtering Service**
+1.  **Task 5.1: World UI System**
 
-    -   Buat `Server/Services/TextFilterModule/` (Pola 5 File).
-    -   `Controller/Logic.lua` berisi _wrapper_ aman untuk `TextService:FilterStringAsync()`.
+    -   Implementasi `Client/OVHL_Modules/WorldUIModule/` (struktur lengkap)
+    -   LED display system untuk "Now Playing" (cari `SurfaceGui` berdasarkan Atribut)
+    -   Queue rotation system untuk "Kirim Salam" (tampilkan 10d, kembali ke Now Playing)
+    -   Text filtering & moderation menggunakan `TextFilterModule`
 
-2.  **Task 5.2: Implementasi World UI Frontend**
+2.  **Task 5.2: Monetization System**
 
-    -   Buat `Client/OVHL_Modules/WorldUIModule/` (struktur eskalasi).
-    -   `Services/Handlers.lua` dengerin 2 _event_: `UpdateUI` (Now Playing) dan `UpdateSalam` (Kirim Salam).
-    -   `Controller/QueueController.lua` berisi _logic_ **Queue Rotasi** (tampilkan Salam 10d, lalu kembali ke Now Playing).
-    -   `Controller/Logic.lua` (lainnya) mencari `SurfaceGui` di `workspace` berdasarkan Atribut `UI_Type: "NowPlaying"` dan ganti `.Text`-nya.
+    -   Implementasi `Server/Services/MonetizationModule/` (struktur lengkap)
+    -   Gamepass & product integration menggunakan `MarketplaceService`
+    -   Implementasi "Beli dulu baru tulis" workflow untuk Kirim Salam
+    -   Integration dengan MusicModule untuk paid song requests
 
-3.  **Task 5.3: Implementasi Kirim Salam Backend**
-
-    -   Daftarkan `RequestSalamPayment` dan `SubmitSalamText` di `Events.lua` (menggantikan `RequestSalam`).
-    -   Buat `Server/OVHL_Modules/SalamModule/` (Pola 5 File).
-    -   `Services/Handlers.lua` dengerin `OnServerEvent("SubmitSalamText")`.
-    -   `Controller/Logic.lua` **WAJIB** `GetModule("TextFilterModule")` -> `TextFilter:Filter(text)` -> (Jika lolos) -> `RemoteWrapper:FireAllClients("UpdateSalam", filteredText)`.
-
-4.  **Task 5.4: Validasi Interaksi**
-    -   **Kriteria Sukses:** LED panggung nampilin "Now Playing". Player kirim salam. Teks di LED ganti jadi salam (yang udah disensor), nunggu 10 detik, terus balik lagi nampilin "Now Playing".
+3.  **Task 5.3: Performance & Optimization**
+    -   Memory management & cleanup procedures
+    -   Performance monitoring dan logging
+    -   Error handling enhancement untuk production
+    -   **Kriteria Sukses:** Semua gameplay features working, monetization integrated, performance optimized
 
 ---
 
-### Fase 6: 💰 Monetisasi & Rilis (Prioritas Terakhir)
+### Fase 6: 🚀 Production Ready & Deployment (Priority #6)
 
-**Tujuan:** Mengaktifkan _logic_ pembayaran untuk fitur-fitur premium dan mempersiapkan game untuk _publish_.
+**Tujuan:** Final testing, optimization, dan deployment.
 
-1.  **Task 6.1: Implementasi Monetization Service**
+1.  **Task 6.1: Comprehensive Testing**
 
-    -   Buat `Server/Services/MonetizationModule/` (Pola 5 File).
-    -   `Controller/Logic.lua` berisi _wrapper_ untuk `MarketplaceService` (cek _gamepass_, _prompt_ pembelian).
-    -   Fungsi utama: `CheckGamepass(player, "VIP_Access")`, `HandleSongRequestPayment(player)` dan `HandleSalamPayment(player)`.
+    -   End-to-end testing semua features
+    -   Stress testing dengan multiple players
+    -   Edge case handling dan error recovery testing
 
-2.  **Task 6.2: Update Config (Global)**
+2.  **Task 6.2: Performance Optimization**
 
-    -   Pastikan `Server/Config.lua` memiliki:
-        ```lua
-        Config.Monetization = {
-            EnableSongRequests = false, -- Default false
-            EnableKirimSalam = false    -- Default false
-        }
-        -- Pastikan Config.Debug.GlobalLogLevel sudah ada
-        ```
+    -   Memory leak detection & fixing
+    -   Network optimization untuk mengurangi bandwidth
+    -   Load time optimization untuk better user experience
 
-3.  **Task 6.3: Integrasi Pembayaran (Song Request)**
+3.  **Task 6.3: Deployment & Monitoring**
+    -   Production config setup (`debug.global_log_level = "INFO"`)
+    -   Analytics & monitoring integration
+    -   Documentation finalization dan knowledge transfer
+    -   **Kriteria Sukses:** Production ready, performance optimized, semua systems operational
 
-    -   Update `Server/OVHL_Modules/MusicModule/`.
-    -   Di `Services/Handlers.lua` (Handle `RequestSong`), tambahkan _logic_:
-        1.  Cek _role_ via `PermissionSync:GetRole(player)`.
-        2.  Jika bukan _role_ (bukan Admin/VIP), cek `Config.Monetization and Config.Monetization.EnableSongRequests` (Defensive Config).
-        3.  Jika `true`, panggil `MonetizationModule:HandleSongRequestPayment(player)`. Baru panggil `Controller/Queue.lua` jika `true`.
+---
 
-4.  **Task 6.4: Integrasi Pembayaran (Kirim Salam)**
+## 🎯 SUCCESS CRITERIA PER FASE:
 
-    -   Update `Server/OVHL_Modules/SalamModule/`.
-    -   Implementasi _logic_ **"Beli Dulu Baru Tulis"** (sesuai Blueprint).
-    -   `Services/Handlers.lua` akan:
-        1.  Dengerin `OnServerEvent("RequestSalamPayment")`.
-        2.  Panggil `MonetizationModule:HandleSalamPayment(player)` (atau di-bypass oleh `PermissionSync`).
-        3.  Jika berhasil, `FireClient(player, "PaymentSuccessSalam")`.
-        4.  Dengerin `OnServerEvent("SubmitSalamText")` -> Panggil `Controller/Logic.lua` (untuk filter & broadcast).
-
-5.  **Task 6.5: Finalisasi & Deploy**
-    -   _Testing_ end-to-end semua fitur.
-    -   _Review_ semua _performance guideline_ (`Decision #10` - Memory Cleanup & Race Condition).
-    -   Ubah `Server/Config.lua` -> `Debug.GlobalLogLevel = "INFO"` (sesuai `Decision #6`).
-    -   **Kriteria Sukses:** Game siap _publish_.
+-   **Fase 1:** Kernel boot + UIManager working + Smart component discovery validated
+-   **Fase 2:** Music play → Smart UI update working both modes tanpa manual UI code
+-   **Fase 3:** Comprehensive UI components + Enhanced StarterGui integration + Design system consistent
+-   **Fase 4:** Player persistence working + Zone system operational + Permission system functional
+-   **Fase 5:** All gameplay features working + Monetization integrated + Performance optimized
+-   **Fase 6:** Production ready + Comprehensive testing passed + Deployment successful

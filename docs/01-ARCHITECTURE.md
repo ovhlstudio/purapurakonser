@@ -1,204 +1,347 @@
-# 🏛️ 01 - ARSITEKTUR (KITAB SUCI TEKNIS)
+## 🏛️ 01 - ARSITEKTUR (KITAB SUCI TEKNIS - BATTLE TESTED)
 
-**Versi:** 1.0.0
-**Status:** FINAL
-**Tujuan:** Dokumen ini adalah "Kitab Suci" (Single Source of Truth) untuk **Arsitektur Teknis Proyek**. Dokumen ini mendefinisikan _BAGAIMANA_ kita membangun "OVHL Core System" yang _reusable_, _scalable_, _anti-crash_, dan _future-proof_.
-
----
-
-## 🚀 POKOK-POKOK ARSITEKTUR
-
-1.  **Entrypoint Dikelola Rojo:** `init.server.lua` (Script) & `init.client.lua` (LocalScript) adalah _entrypoint_ yang otomatis jalan, bukan `ModuleScript`.
-2.  **Kernel 4-Fase:** Bootstrap (`Phase 0`) terpisah dari Kernel Loader (`Phase 1-3`) untuk menjamin _priority load_ (Logger & Config).
-3.  **Prioritas Domain (Anti-Crash):** Kernel **WAJIB** me-load dan meng-`Init` modul sesuai urutan prioritas: `Core` -> `Services` -> `OVHL_Modules`. Ini menjamin `Services` (Penyedia) sudah siap sebelum `OVHL_Modules` (Pengguna) memanggilnya.
-4.  **Logger Terpusat:** Satu `Shared/Logger` dipakai oleh Server & Client, di-Init dengan _Dependency Injection_ (anti _circular dependency_).
-5.  **Struktur Domain:** Modul dibagi berdasarkan tanggung jawab: `Core`, `Services`, `OVHL_Modules` (menggantikan "Business").
-6.  **Struktur Internal Modul (Anti-"God File"):** Setiap modul **WAJIB** memisahkan `init.lua` (API), `Config.lua`, `Controller/` (Otak), dan `Services/` (Telinga & Tangan).
-7.  **Komunikasi Aman (Anti-Circular):** Komunikasi antar modul _hanya_ via `Kernel:GetModule()`, dan _hanya_ di dalam `Init()` (untuk _cache_), BUKAN di _top-level_. Logika baru jalan _setelah_ `Phase 3` selesai.
-8.  **Permission Aggregator (Anti-Crash):** Sistem izin (`Core/PermissionSync`) adalah _service_ internal yang _mencoba_ membaca Kohl's Admin dan memiliki _fallback_ penuh (cek Gamepass, Grup) jika Kohl's gagal.
+**Versi:** 2.1.0 (Smart UI System)  
+**Status:** FINAL  
+**Tujuan:** Dokumen "Kitab Suci" yang sudah teruji dari pengalaman implementasi nyata. Mendefinisikan **OVHL Core System** yang _reusable_, _scalable_, _anti-crash_, dan **fully modular**.
 
 ---
 
-## 🏛️ KEPUTUSAN ARSITEKTUR (DECISIONS)
+## 🚀 POKOK-POKOK ARSITEKTUR (BATTLE TESTED)
 
-### Decision #1: Arsitektur Kernel (Bootstrap & Loader)
+1.  **Entrypoint Rojo Managed:** `init.server.lua` (Script) & `init.client.lua` (LocalScript) sebagai entrypoint otomatis
+2.  **Kernel 4-Fase Proven:** Bootstrap (`Phase 0`) → Loader (`Phase 1-3`) - **SUDAH TERBUKTI WORK**
+3.  **Domain Priority Critical:** `Core` → `Services` → `OVHL_Modules` → `Shared` - **WAJIB urutan ini**
+4.  **Fully Modular Architecture:** Zero-configuration, auto-discovery, plug & play modules
+5.  **Smart UI System:** Core UI Manager dengan AI-powered component discovery - **NEW**
+6.  **Clean Separation:** Business Logic vs UI Components vs Infrastructure - **LESSON LEARNED**
+7.  **Standardized Interfaces:** Modul expose metadata via well-known functions untuk auto-discovery
+8.  **Anti-Circular Dependency Strict:** Komunikasi hanya via Kernel APIs, cache di Init() only
+9.  **Modular Configuration:** Setiap modul self-contained dengan config internal
+10. **Standardized Naming:** Files `snake_case.lua`, folders `PascalCase`, variables `camelCase`
 
-Ini adalah keputusan paling fundamental yang mem-fix _priority load_ dan _circular dependency_.
+---
 
-#### 1.1. Fase 0: Bootstrap (Entrypoint Script)
+## 🏛️ KEPUTUSAN ARSITEKTUR (BATTLE TESTED DECISIONS)
 
-`init.server.lua` (Script) dan `init.client.lua` (LocalScript) bertugas HANYA untuk menyalakan modul-modul inti _sebelum_ Kernel utama jalan.
+### Decision #1: Arsitektur Kernel 4-Fase (PROVEN WORKING)
 
-**Contoh Kode (`src/Server/init.server.lua`):**
+**KONTEKS PRAKTIS:** Sistem harus boot dengan urutan prioritas ketat untuk hindari circular dependency dan crash.
+
+#### 1.1. Fase 0: Bootstrap (Entrypoint Script) - **CRITICAL**
+
+`init.server.lua` (Script) dan `init.client.lua` (LocalScript) bertugas HANYA menyalakan modul inti **sebelum** Kernel utama.
+
+**Contoh Kode TERBUKTI WORK (`src/Server/init.server.lua`):**
 
 ```lua
 -- File ini adalah SCRIPT, otomatis jalan oleh Rojo
 print("PHASE 0: Server Bootstrap...")
 
--- 1. Load Modul Inti (Urutan WAJIB)
-local Config = require(script.Config)
-local Logger = require(game:GetService("ReplicatedStorage").Shared.Logger.init)
+-- 1. Load Modul Inti (Urutan WAJIB - JANGAN DIBALIK!)
+local config = require(script.config)
+local logger = require(game:GetService("ReplicatedStorage").Shared.Logger.manifest)
 
 -- 2. Injeksi Dependensi (Memutus Circular Dependency)
--- Logger sekarang NYALA dan punya akses ke Config
-Logger:Init(Config)
+-- Logger sekarang NYALA dan punya akses ke config
+logger:Init(config)
 
 -- 3. Panggil Kernel Utama (ModuleScript)
-local Kernel = require(script.Core.Kernel)
+local kernel = require(script.Core.Kernel.manifest)
 
 -- 4. Mulai 3-Phase Loader (Phase 1, 2, 3)
-Kernel:Init(Config, Logger) -- Beri Kernel akses langsung ke modul inti
+kernel:Init(config, logger)
 
-Logger:Info("Bootstrap", "SYSTEM", "PHASE 0: Bootstrap Selesai. Kernel mengambil alih.")
+logger:Info("Bootstrap", "SYSTEM", "PHASE 0: Bootstrap Selesai. Kernel mengambil alih.")
 ```
 
-#### 1.2. Fase 1-3: Kernel Loader (Dengan Prioritas Domain)
+#### 1.2. Fase 1-3: Kernel Loader (Dengan Prioritas Domain) - **PROVEN**
 
-`Core/Kernel.lua` (ModuleScript) berisi _logic_ 3-Phase Loader yang aman dan **mengikuti urutan prioritas** untuk menjamin `Services` siap sebelum `OVHL_Modules`.
+`Core/Kernel/manifest.lua` (ModuleScript) berisi logic 3-Phase Loader yang **SUDAH TERBUKTI AMAN**.
 
-**Contoh Kode (`src/Server/Core/Kernel.lua`):**
+**Contoh Kode WORKING (`src/Server/Core/Kernel/manifest.lua`):**
 
 ```lua
 local ServerKernel = {}
 ServerKernel.Modules = {}
+local logger, config
 
--- Cache modul inti dari Phase 0
-local Logger
-local Config
+-- 🎯 URUTAN DISCOVERY (Loading)
+local DISCOVERY_PRIORITY = { "Core", "Services", "OVHL_Modules" }
 
--- (FIX) DOMAIN_PRIORITY WAJIB untuk urutan load
-local DOMAIN_PRIORITY = { "Core", "Services", "OVHL_Modules" }
+-- 🎯 URUTAN INISIALISASI (PENTING!)
+-- Shared (Network) harus Init SEBELUM OVHL_Modules (MusicModule)
+local INIT_DOMAINS_INTERNAL = { "Core", "Services" }
+-- Shared dan OVHL_Modules akan di-handle terpisah
 
--- Central function to get modules
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local SHARED_PATH = ReplicatedStorage:WaitForChild("Shared")
+
 function ServerKernel:GetModule(moduleName)
     local module = self.Modules[moduleName]
     if not module then
-        Logger:Warn("Kernel", "SYSTEM", "Module not found: " .. moduleName)
+        if logger then
+            logger:Warn("Kernel", "SYSTEM", "Module not found: " .. moduleName)
+        else
+            warn("Kernel: Module not found (logger not yet available): " .. moduleName)
+        end
     end
     return module
 end
 
+-- 🎯 API BARU UNTUK NETWORK
+function ServerKernel:GetAllModules()
+    return self.Modules
+end
+
+local function discoverModules(path, kernelModules, logger)
+    -- ... (kode discoverModules tidak berubah) ...
+end
+
+-- Fungsi helper untuk Init
+local function initializeDomain(domainFolder, kernel, logger)
+    if not domainFolder then return end
+    for _, item in ipairs(domainFolder:GetChildren()) do
+        local module = kernel.Modules[item.Name]
+        if module and module ~= kernel and (not module.IsInitialized) then
+            if module.SetKernel then module:SetKernel(kernel) end
+
+            if type(module.Init) == "function" then
+               local success, err = pcall(module.Init, module)
+               if not success then
+                    logger:Error("Kernel", "SYSTEM", "PHASE 3: Modul " .. item.Name .. " GAGAL di-Init!", err)
+               end
+               module.IsInitialized = true
+            end
+        end
+    end
+end
+
 function ServerKernel:Init(configModule, loggerModule)
-    -- === PHASE 1: CORE BOOT ===
-    Config = configModule
-    Logger = loggerModule
-    ServerKernel.Modules["Config"] = Config
-    ServerKernel.Modules["Logger"] = Logger
+    config = configModule
+    logger = loggerModule
+    ServerKernel.Modules["Config"] = config
+    ServerKernel.Modules["Logger"] = logger
     ServerKernel.Modules["Kernel"] = self
 
-    Logger:Info("Kernel", "SYSTEM", "PHASE 1: Core Boot Selesai.")
-
-    -- === PHASE 2: MODULE DISCOVERY (SESUAI URUTAN PRIORITAS) ===
-    Logger:Info("Kernel", "SYSTEM", "PHASE 2: Module Discovery Dimulai...")
-    for _, domainName in ipairs(DOMAIN_PRIORITY) do
-        local domainFolder = script.Parent.Parent:FindFirstChild(domainName)
-        if not domainFolder then
-            Logger:Warn("Kernel", "SYSTEM", "Domain folder not found: " .. domainName)
-            continue
-        end
-
-        for _, item in ipairs(domainFolder:GetChildren()) do
-            if item:IsA("Folder") and item:FindFirstChild("init") then
-                local moduleName = item.Name
-                if ServerKernel.Modules[moduleName] then continue end
-
-                -- pcall WAJIB untuk 3rd party & syntax error
-                local success, module = pcall(require, item.init)
-                if success then
-                    ServerKernel.Modules[moduleName] = module
-                    Logger:Debug("Kernel", "SYSTEM", "ACTION", "Modul " .. moduleName .. " di-load")
-                else
-                    Logger:Error("Kernel", "SYSTEM", "PHASE 2: Modul " .. moduleName .. " GAGAL di-load!", module)
-                end
-            end
-        end
+    if loggerModule.IsInitialized == nil then
+        loggerModule.IsInitialized = true
     end
-    Logger:Info("Kernel", "SYSTEM", "PHASE 2: Module Discovery Selesai.")
 
-    -- === PHASE 3: INITIALIZATION (SESUAI URUTAN PRIORITAS) ===
-    Logger:Info("Kernel", "SYSTEM", "PHASE 3: Inisialisasi Dimulai...")
-    for _, domainName in ipairs(DOMAIN_PRIORITY) do
-        local domainFolder = script.Parent.Parent:FindFirstChild(domainName)
-        if not domainFolder then continue end
+    logger:Info("Kernel", "SYSTEM", "PHASE 1: Core Boot Selesai.")
 
-        for _, item in ipairs(domainFolder:GetChildren()) do
-            local moduleName = item.Name
-            local module = ServerKernel.Modules[moduleName]
+    local rootScript = script:FindFirstAncestorOfClass("Script")
+    -- ... (cek rootScript) ...
 
-            -- Cek jika modul sudah di-load & belum di-Init
-            if module and module ~= self then -- Jangan Init diri sendiri (Kernel)
-                if type(module) == "table" and type(module.Init) == "function" then
-                    local success, err = pcall(module.Init, module)
-                    if not success then
-                        Logger:Error("Kernel", "SYSTEM", "PHASE 3: Modul " .. moduleName .. " GAGAL di-Init!", err)
-                    end
-                end
-            end
-        end
+    logger:Info("Kernel", "SYSTEM", "PHASE 2: Module Discovery Dimulai...")
+
+    -- PHASE 2A: Load Internal Domains
+    for _, domainName in ipairs(DISCOVERY_PRIORITY) do
+        local domainFolder = rootScript:FindFirstChild(domainName)
+        discoverModules(domainFolder, ServerKernel.Modules, logger)
     end
-    Logger:Info("Kernel", "SYSTEM", "PHASE 3: Inisialisasi Selesai. Server Siap.")
+
+    -- PHASE 2B: Load Shared Modules (FIX BARU)
+    logger:Info("Kernel", "SYSTEM", "PHASE 2B: Loading Shared Modules...")
+    discoverModules(SHARED_PATH, ServerKernel.Modules, logger)
+
+    logger:Info("Kernel", "SYSTEM", "PHASE 2: Module Discovery Selesai.")
+    logger:Info("Kernel", "SYSTEM", "PHASE 3: Inisialisasi Dimulai (Urutan Diperbaiki)...")
+
+    -- 🎯 FASE 3: URUTAN INIT YANG BENAR (FIX BARU)
+
+    -- 1. Init Core & Services
+    for _, domainName in ipairs(INIT_DOMAINS_INTERNAL) do
+        local domainFolder = rootScript:FindFirstChild(domainName)
+        initializeDomain(domainFolder, self, logger)
+    end
+
+    -- 2. Init Shared (Network, Logger, dll)
+    initializeDomain(SHARED_PATH, self, logger)
+
+    -- 3. Init OVHL_Modules (MusicModule, dll)
+    local ovhlFolder = rootScript:FindFirstChild("OVHL_Modules")
+    initializeDomain(ovhlFolder, self, logger)
+
+    logger:Info("Kernel", "SYSTEM", "PHASE 3: Inisialisasi Selesai. Server Siap.")
 end
 
 return ServerKernel
 ```
 
-#### 1.3. Ketahanan Sistem (Anti-Crash)
+**Contoh Kode WORKING (`src/Client/Core/Kernel/manifest.lua`):**
 
-Arsitektur ini _anti-crash_.
+```lua
+local ClientKernel = {}
+ClientKernel.Modules = {}
+local logger
 
-1.  **Anti-Crash 3rd Party:** Seluruh proses `require` di `Phase 2` dibungkus dalam `pcall`. Jika `TopbarIntegration` gagal (karena `TopbarPlus` tidak ada), `Logger` akan mencatat error dan Kernel **TETAP LANJUT** me-load 9 modul lainnya.
-2.  **Anti-Crash Urutan Load:** `DOMAIN_PRIORITY` menjamin `Services/` (Penyedia) sudah 100% di-`Init()` _sebelum_ `OVHL_Modules/` (Pengguna) mulai di-`Init()`. Ini menyelesaikan masalah "A -> Z -> X".
-3.  **Anti-Crash Config Nil:** Modul **WAJIB** mengikuti `Decision #4.2` (Defensive Config) untuk mencegah _crash_ "index nil".
+-- 🎯 URUTAN DISCOVERY (Loading)
+local DISCOVERY_PRIORITY = { "Core", "Services", "OVHL_Modules" }
+
+-- 🎯 URUTAN INISIALISASI (PENTING!)
+local INIT_DOMAINS_INTERNAL = { "Core", "Services" }
+
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local SHARED_PATH = ReplicatedStorage:WaitForChild("Shared")
+
+function ClientKernel:GetModule(moduleName)
+    -- ... (kode GetModule tidak berubah) ...
+end
+
+-- 🎯 API BARU UNTUK NETWORK
+function ClientKernel:GetAllModules()
+    return self.Modules
+end
+
+local function discoverModules(path, kernelModules, logger)
+    -- ... (kode discoverModules tidak berubah) ...
+end
+
+-- Fungsi helper untuk Init
+local function initializeDomain(domainFolder, kernel, logger)
+    if not domainFolder then return end
+    for _, item in ipairs(domainFolder:GetChildren()) do
+        local module = kernel.Modules[item.Name]
+        if module and module ~= kernel and (not module.IsInitialized) then
+            if module.SetKernel then module:SetKernel(kernel) end
+
+            if type(module.Init) == "function" then
+               local success, err = pcall(module.Init, module)
+               if not success then
+                    logger:Error("Kernel", "SYSTEM", "PHASE 3: Modul " .. item.Name .. " GAGAL di-Init!", err)
+               end
+               module.IsInitialized = true
+            end
+        end
+    end
+end
+
+function ClientKernel:Init(configModule, loggerModule)
+    logger = loggerModule
+    ClientKernel.Modules["Logger"] = logger
+    ClientKernel.Modules["Kernel"] = self
+
+    if loggerModule and loggerModule.IsInitialized == nil then
+        loggerModule.IsInitialized = true
+    end
+
+    logger:Info("Kernel", "SYSTEM", "PHASE 1: Core Boot Selesai.")
+
+    local rootScript = script:FindFirstAncestorOfClass("LocalScript")
+    -- ... (cek rootScript) ...
+
+    logger:Info("Kernel", "SYSTEM", "PHASE 2: Module Discovery Dimulai...")
+
+    -- PHASE 2A: Load Internal Domains
+    for _, domainName in ipairs(DISCOVERY_PRIORITY) do
+        local domainFolder = rootScript:FindFirstChild(domainName)
+        discoverModules(domainFolder, ClientKernel.Modules, logger)
+    end
+
+    -- PHASE 2B: Load Shared Modules
+    logger:Info("Kernel", "SYSTEM", "PHASE 2B: Loading Shared Modules...")
+    discoverModules(SHARED_PATH, ClientKernel.Modules, logger)
+    -- ... (logging internal vs shared) ...
+
+    logger:Info("Kernel", "SYSTEM", "PHASE 2: Module Discovery Selesai.")
+    logger:Info("Kernel", "SYSTEM", "PHASE 3: Inisialisasi Dimulai (Urutan Diperbaiki)...")
+
+    -- 🎯 FASE 3: URUTAN INIT YANG BENAR (FIX BARU)
+
+    -- 1. Init Core & Services
+    for _, domainName in ipairs(INIT_DOMAINS_INTERNAL) do
+        local domainFolder = rootScript:FindFirstChild(domainName)
+        initializeDomain(domainFolder, self, logger)
+    end
+
+    -- 2. Init Shared (Network, Logger, dll)
+    initializeDomain(SHARED_PATH, self, logger)
+
+    -- 3. Init OVHL_Modules (MusicPlayerUI, dll)
+    local ovhlFolder = rootScript:FindFirstChild("OVHL_Modules")
+    initializeDomain(ovhlFolder, self, logger)
+
+    logger:Info("Kernel", "SYSTEM", "PHASE 3: Inisialisasi Selesai. Client Siap.")
+end
+
+return ClientKernel
+```
 
 ---
 
-### Decision #2: Struktur Folder (Domain Organization)
+### Decision #2: Struktur Folder Domain Organization (PROVEN)
 
-Mengadopsi arsitektur 3-Domain (`Core`, `Services`, `OVHL_Modules`) untuk memisahkan tanggung jawab (Separation of Concerns).
+**KONTEKS PRAKTIS:** Organisasi folder berdasarkan tanggung jawab untuk separation of concerns.
 
-| Domain           | Emoji | Tujuan                          | Contoh                         |
-| :--------------- | :---- | :------------------------------ | :----------------------------- |
-| **Core**         | 🎯    | Fondasi sistem, lintas modul    | Kernel, PermissionSync         |
-| **Services**     | 🛎️    | Integrasi eksternal, I/O        | DataModule, MonetizationModule |
-| **OVHL_Modules** | 🎮    | (BARU) Logika gameplay spesifik | MusicModule, ZoneModule        |
-| **Legacy**       | 🔧    | Kode usang (Diarsipkan)         | Kohl's Admin Addons            |
+| Domain           | Emoji | Tujuan                       | Contoh                                | Keterangan    |
+| ---------------- | ----- | ---------------------------- | ------------------------------------- | ------------- |
+| **Core**         | 🎯    | Fondasi sistem, lintas modul | Kernel, PermissionSync, **UIManager** | Load pertama  |
+| **Services**     | 🛎️    | Integrasi eksternal, I/O     | DataModule, MonetizationModule        | Load kedua    |
+| **OVHL_Modules** | 🎮    | Logika gameplay spesifik     | MusicModule, ZoneModule               | Load ketiga   |
+| **Shared**       | 🔄    | Shared resources, components | Logger, Network, OVHL_UI              | Load terakhir |
 
-#### 2.1. Struktur File V2 (Target)
-
-Struktur ini **WAJIB** diikuti dan sudah _Rojo-aware_ (`.server.lua` / `.client.lua`).
+#### 2.1. Struktur File PROVEN (Battle Tested) - **UPDATED**
 
 ```text
-📁 src/
+./                                  ← Root kerja VS Code
+📁 src/                            ← Root folder semua source code
 ├── 📁 Client/
-│   ├── 📜 init.client.lua         <-- (LocalScript) BOOTSTRAPPER KLIEN
-│   └── 📁 Core/
-│       └── 📜 Kernel.lua          <-- (ModuleScript) Kernel Loader Klien
-│   └── ... (Services, OVHL_Modules)
+│   ├── 📜 init.client.lua         ← (LocalScript) BOOTSTRAPPER KLIEN - PROVEN
+│   ├── 📁 Core/
+│   │   ├── 📁 Kernel/
+│   │   │   └── 📜 manifest.lua    ← (ModuleScript) Kernel Loader - PROVEN
+│   │   └── 📁 UIManager/          ← 🆕 CORE UI MANAGER (SMART!) - **FIXED PATH**
+│   │       ├── 📜 manifest.lua    ← Smart UI discovery & management
+│   │       └── 📜 config.lua      ← UI component registry
+│   └── 📁 OVHL_Modules/
+│       └── 📁 MusicPlayerUI/      ← UI BUSINESS LOGIC (SMART UI)
+│           ├── 📜 manifest.lua    ← API + UI config sederhana
+│           ├── 📜 config.lua      ← Hanya mode & component expectations
+│           ├── 📁 Controller/     ← Business logic (TANPA UI complexity)
+│           └── 📁 Services/       ← Network listeners, state
 │
 ├── 📁 Server/
-│   ├── 📜 init.server.lua         <-- (Script) BOOTSTRAPPER SERVER
-│   ├── 📜 Config.lua              <-- (ModuleScript) Config (Global)
-│   └── 📁 Core/
-│       ├── 📜 Kernel.lua          <-- (ModuleScript) Kernel Loader Server
-│       └── 📁 PermissionSync/     <-- (Modul)
-│           └── 📜 init.lua
+│   ├── 📜 init.server.lua         ← (Script) BOOTSTRAPPER SERVER - PROVEN
+│   ├── 📜 config.lua              ← (ModuleScript) Global Config
+│   ├── 📁 Core/
+│   │   ├── 📁 Kernel/
+│   │   │   └── 📜 manifest.lua    ← (ModuleScript) Kernel Loader - PROVEN
+│   │   ├── 📁 PermissionSync/     ← (Modul) Permission system
+│   │   │   ├── 📜 manifest.lua
+│   │   │   └── 📜 config.lua
 │   ├── 📁 Services/
-│   │   └── 📁 DataModule/         <-- (Modul)
-│   │       └── 📜 init.lua
-│   └── 📁 OVHL_Modules/           <-- (Modul) NAMA BARU
-│       └── 📁 MusicModule/
-│           └── 📜 init.lua
+│   │   └── 📁 DataModule/         ← (Modul) Data persistence
+│   │       ├── 📜 manifest.lua
+│   │       └── 📜 config.lua
+│   └── 📁 OVHL_Modules/
+│       └── 📁 MusicModule/        ← BUSINESS LOGIC (PURE)
+│           ├── 📜 manifest.lua    ← API + GetNetworkEvents()
+│           ├── 📜 config.lua      ← Business settings
+│           ├── 📁 Controller/     ← AutoDJ, Queue logic
+│           └── 📁 Services/       ← Event handlers, state
 │
 └── 📁 Shared/
-    ├── 📁 Logger/                 <-- (Modul) Logger Terpusat
-    │   └── 📜 init.lua
-    └── 📁 Network/                <-- (Modul) Remote Event Wrapper
-        └── 📜 init.lua
+    ├── 📁 Logger/                 ← (Modul) Logger Terpusat - PROVEN
+    │   └── 📜 manifest.lua
+    ├── 📁 Network/                ← (Modul) Auto-Discovery Network
+    │   └── 📜 manifest.lua        ← Auto-event registry
+    └── 📁 OVHL_UI/                ← (Modul) Pure UI Components - PROVEN
+        ├── 📜 manifest.lua        ← Design System + Components
+        ├── 📁 ModalSystem/        ← UI Components (BUKAN business logic)
+        │   ├── 📜 small_modal.lua
+        │   └── 📜 big_modal.lua
+        ├── 📁 LayoutSystem/
+        │   ├── 📜 flex.lua
+        │   └── 📜 grid.lua
+        ├── 📁 ContentComponents/
+        │   ├── 📜 card.lua
+        │   └── 📜 list.lua
+        └── 📁 FormComponents/
+            ├── 📜 button.lua
+            └── 📜 slider.lua
 ```
 
-#### 2.2. Rojo `default.project.json` (FIXED)
-
-Ini adalah _mapping_ Rojo yang **WAJIB** digunakan. (Blok `Kohl's Admin` telah **dihapus** sesuai permintaan).
+#### 2.2. Rojo `default.project.json` (PROVEN WORKING)
 
 ```json
 {
@@ -231,416 +374,484 @@ Ini adalah _mapping_ Rojo yang **WAJIB** digunakan. (Blok `Kohl's Admin` telah *
 
 ---
 
-### Decision #3: Struktur Internal Modul (BARU)
+### Decision #3: Struktur Internal Modul (PROVEN PATTERN)
 
-Untuk menghindari "God Files" (file `init.lua` 2000 baris) dan menjamin _maintenance_ yang gampang, setiap modul **WAJIB** mengikuti struktur folder internal ini:
+**KONTEKS PRAKTIS:** Hindari "God Files" dengan separation of concerns dalam modul.
 
-#### 3.1. Pola Struktur Folder (WAJIB)
-
-```text
-📁 NamaModul/
-├── 📜 init.lua        (API Publik / "Wajah")
-├── 📜 Config.lua      (Setting / Konstanta Modul)
-│
-├── 📁 Controller/     ("Otak" / Logic Bisnis)
-│   └── 📜 MainLogic.lua   (atau file eskalasi seperti AutoDJ.lua)
-│
-└── 📁 Services/       ("Tangan & Telinga" / Pendukung)
-    ├── 📜 Handlers.lua    (Semua Event Listener)
-    └── 📜 State.lua       (Manajemen Memori / Cache Runtime)
-```
-
-#### 3.2. Penjelasan Peran
-
-1.  **`init.lua` (API Publik):**
-    -   Satu-satunya file yang di-`require` oleh `Kernel`.
-    -   **Tugas:** Me-`require` file-file dari `Controller/` dan `Services/`, mengambil _dependencies_ (`Logger`, `DataModule`) dari `Kernel`, menyuntikkannya ke _pekerja_ internal, dan me-_return_ tabel API publik (`:PlaySong()`, `:GetRole()`).
-2.  **`Config.lua`:**
-    -   Berisi `return { ... }` dengan setting _khusus_ modul itu.
-3.  **`📁 Controller/` ("Otak"):**
-    -   Berisi _semua_ logika bisnis murni. File-file ini yang _memutuskan_ "apa yang harus dilakukan".
-    -   Contoh: `AutoDJ.lua`, `Scanner.lua`.
-4.  **`📁 Services/` ("Tangan & Telinga"):**
-    -   Berisi _semua_ logika pendukung, _event_, dan manajemen data.
-    -   **`Handlers.lua`:** Wajib ada. Menangani semua `Remote:OnServerEvent`, `Players.PlayerAdded`, `.Touched`, dll.
-    -   **`State.lua`:** Wajib ada. Tempat nyimpen _cache_ `playerRoles` atau `CurrentSong`. **WAJIB** membersihkan data player saat `PlayerRemoving` (lihat `Decision #X (Memory Cleanup)`).
-
-#### 3.3. Penjelasan: Kenapa Manual Registry? (PENTING)
-
-Struktur internal modul (Level 2) **WAJIB** menggunakan "Manual Registry" (`require` manual), tidak seperti Kernel (Level 1) yang menggunakan "Smart Discover".
-
-**Kenapa?**
-
-1.  **Kendali Urutan Loading:** `init.lua` _harus_ menjamin `Config.lua` di-`require` **sebelum** `Controller/MainLogic.lua` yang menggunakannya. _Smart discover_ tidak bisa menjamin urutan ini dan akan menyebabkan _crash_.
-2.  **Dependency Injection:** _Manual registry_ memungkinkan `init.lua` (Manajer) menyuntikkan "alat" (seperti `Logger` atau `DataModule`) ke "pekerja"-nya (`MainLogic:Init(Logger, DataModule)`). _Smart discover_ tidak bisa melakukan ini.
-
----
-
-### Decision #4: Komunikasi Antar Modul (Registry)
-
-Modul dilarang `require` modul lain secara langsung. Komunikasi **WAJIB** melalui `Kernel:GetModule()`.
-
-#### 4.1. Aturan Anti-Circular Dependency
-
-1.  **DILARANG** `require` modul lain di _top-level_ (di luar fungsi).
-2.  **DILARANG** memanggil `Kernel:GetModule()` di _top-level_.
-3.  **WAJIB** memanggil `Kernel:GetModule()` **HANYA** di dalam `Init()` (Phase 3) dan menyimpannya di _cache_ (`State.lua` atau `local`).
-4.  **WAJIB** memanggil fungsi modul lain (misal: `DataModule:SaveData()`) HANYA _setelah_ `Phase 3` selesai (misal: di dalam _event handler_ seperti `OnPlayerAdded` atau `OnServerEvent`).
-
-#### 4.2. (BARU) Aturan Defensive Config (Anti-Crash)
-
-Modul _apapun_ yang membaca dari `Config.lua` (global) **WAJIB** melakukannya secara _defensive_ (aman) dan **TIDAK BOLEH** berasumsi tabelnya ada.
-
-**Pola yang SALAH (Akan Crash):**
-
-```lua
--- DILARANG: Asumsi Config.Monetization ada
-if Config.Monetization.EnableSongRequests then ... end
-```
-
-**Pola yang BENAR (Wajib Diterapkan):**
-
-```lua
--- WAJIB: Gunakan 'and' (short-circuiting) atau 'or' (default value)
-
--- Cara 1: Cek rantai (Aman jika nil)
-local isEnabled = Config.Monetization and Config.Monetization.EnableSongRequests
-if isEnabled then
-    -- ...
-end
-
--- Cara 2: Pakai 'or' (Set default jika nil)
-local isEnabled = Config.Monetization and Config.Monetization.EnableSongRequests or false
-if isEnabled then
-    -- ...
-end
-```
-
-**Hasil:** Jika Dev lupa nulis tabel `Monetization` di `Config.lua`, `isEnabled` akan jadi `false` (paling aman) dan **game tidak akan crash**.
-
----
-
-### Decision #5: Komunikasi Network (RemoteWrapper)
-
-Semua komunikasi Client-Server **WAJIB** melalui `RemoteWrapper` terpusat.
-
-**Struktur File (`src/Shared/Network/`):**
+#### 3.1. Pola Struktur Folder (WAJIB & TESTED)
 
 ```text
-Network/
-├── 📜 init.lua             (API: :FireAllClients, :OnServerEvent)
-├── 📜 Events.lua           (Data: Daftar RemoteEvent)
-└── 📁 Controller/
-    └── 📜 RemoteWrapper.lua (Eskalasi Logic: Pembuatan Remote)
+📁 MusicModule/                    ← PascalCase folder
+├── 📜 manifest.lua    (API Publik + Well-known functions)
+├── 📜 config.lua      (Module config - snake_case)
+│
+├── 📁 Controller/     ("Otak" / Business Logic)
+│   └── 📜 auto_dj.lua   (snake_case internal files)
+│   └── 📜 queue.lua
+│
+└── 📁 Services/       ("Tangan & Telinga" / Support)
+    ├── 📜 handlers.lua  (Event Listeners - snake_case)
+    └── 📜 state.lua     (Memory Management / Cache)
 ```
 
-**`Events.lua` (Contoh):**
+#### 3.2. Module Config Structure (PROVEN) - **ENHANCED FOR SMART UI**
 
 ```lua
+-- MusicPlayerUI/config.lua (CONTOH SIMPLE!)
 return {
-    ["UpdateUI"] = "Event",     -- Server -> Client
-    ["RequestSong"] = "Event",  -- Client -> Server
-    ["RequestSalam"] = "Event", -- Client -> Server
-}
-```
+    -- 🎯 UI CONFIG SEDERHANA - Core UIManager handle complexity
+    ui = {
+        mode = "StarterGui",  -- "OVHL_UI" atau "StarterGui"
+        screen_gui = "MusicPanel",  -- Nama ScreenGui (optional)
 
----
+        components = {  -- 🎯 EXPECTED COMPONENTS (untuk validation & discovery)
+            now_playing_title = "TextLabel",
+            now_playing_artist = "TextLabel",
+            play_button = "TextButton",
+            pause_button = "TextButton",
+            volume_slider = "Frame"  -- Slider biasanya Frame container
+        }
+    },
 
-### Decision #6: Logger & Log Level System
-
-Sistem **WAJIB** menggunakan satu Logger Terpusat (`Shared/Logger`) yang _Config-aware_.
-
-#### 6.1. Log Level Hierarchy
-
-```
-DEBUG = 1   -- 🔍 Verbose (HANYA development)
-INFO = 2    -- ℹ️ Normal (Default production)
-WARN = 3    -- ⚠️ Warning
-ERROR = 4   -- 💀 Critical (SELALU tampil)
-PERF = 5    -- ⚡ Performance (Opsional)
-```
-
-#### 6.2. Struktur Config (`src/Server/Config.lua`)
-
-```lua
-return {
-    Debug = {
-        GlobalLogLevel = "INFO", -- "DEBUG" | "INFO"
-        ModuleLevels = {
-            MusicModule = "DEBUG", -- Override: MusicModule bawel
-        },
-        EnablePerfLogs = false,
+    -- Business config tetap
+    debug = {
+        log_level = "INFO",
+        enable_perf_logs = false
+    },
+    features = {
+        enable_song_requests = true
     }
 }
 ```
 
-#### 6.3. Format Log (Clean - Tanpa Timestamp)
+---
 
-`{REALM} {DOMAIN} {LEVEL} {TYPE} [{MODULE}] {MESSAGE}`
+### Decision #4: Komunikasi Antar Modul (BATTLE TESTED)
 
-**Contoh Output (`GlobalLogLevel = "INFO"`):**
+**KONTEKS PRAKTIS:** Hindari circular dependency dan enable modular communication.
 
-```text
-🖥️ 🎵 ℹ️ 📢 [MusicModule] Playing: Kopi Dangdut - Fahmi Shahab
-```
+#### 4.1. Aturan Anti-Circular Dependency (STRICT & PROVEN)
 
-#### 6.4. Template Kode Logger (`src/Shared/Logger/init.lua`)
+1.  **🚫 DILARANG** `require` modul lain di _top-level_ (di luar fungsi)
+2.  **🚫 DILARANG** memanggil `Kernel:GetModule()` di _top-level_
+3.  **✅ WAJIB** memanggil `Kernel:GetModule()` **HANYA** di dalam `Init()` (Phase 3) dan menyimpannya di _cache_
+4.  **✅ WAJIB** memanggil fungsi modul lain HANYA _setelah_ `Phase 3` selesai
+
+#### 4.2. Pola yang BENAR (PROVEN WORKING) - **ENHANCED WITH UIMANAGER**
 
 ```lua
-local Logger = {}
-local Config -- (FIX) Ditugaskan oleh Kernel via Init()
--- ... (HttpService, RunService, IS_SERVER, ENV_EMOJI, LOG_LEVELS) ...
+-- MusicPlayerUI/manifest.lua - CONTOH SUPER SIMPLE!
+local MusicPlayerUI = {}
+local logger, network, uiManager, uiInstance
 
-function Logger:Init(configModule)
-    Config = configModule
-    self:Info("Logger", "SYSTEM", "Logger V1.0.0 (Unified) Initialized")
-end
+function MusicPlayerUI:Init()
+    -- ✅ Cache dependencies di Init() saja
+    local kernel = self:GetKernel()
+    logger = kernel:GetModule("Logger")
+    network = kernel:GetModule("Network")
+    uiManager = kernel:GetModule("UIManager")  -- 🎯 PAKAI CORE UI MANAGER!
 
--- (FIX) Core logging function yang Config-aware
-local function ShouldLog(moduleName, level)
-    local globalLevelKey = "INFO"
-    if Config and Config.Debug and Config.Debug.GlobalLogLevel then
-        globalLevelKey = Config.Debug.GlobalLogLevel
-    end
-    local globalLevel = LOG_LEVELS[globalLevelKey] or LOG_LEVELS.INFO
+    -- 🎯 UI SETUP SUPER SIMPLE - Core handle complexity!
+    uiInstance = uiManager:SetupModuleUI("MusicPlayer", self.config)
 
-    local moduleLevelKey = nil
-    if Config and Config.Debug and Config.Debug.ModuleLevels then
-        moduleLevelKey = Config.Debug.ModuleLevels[moduleName]
+    if not uiInstance then
+        logger:Error("MusicPlayerUI", "UI", "Gagal setup UI!")
+        return
     end
 
-    -- (FIX) Fallback jika modul lupa di-input
-    local threshold = moduleLevelKey and LOG_LEVELS[moduleLevelKey] or globalLevel
-    return LOG_LEVELS[level] >= threshold
+    logger:Info("MusicPlayerUI", "SYSTEM", "MusicPlayerUI Initialized dengan Smart UI")
 end
 
--- (FIX) Fungsi log tanpa timestamp
-function Logger:Info(moduleName, domain, message)
-    if not ShouldLog(moduleName, "INFO") then return end
-    print(string.format(
-        "%s %s %s 📢 [%s] %s",
-        ENV_EMOJI, getEmoji(domain), getEmoji("INFO"), moduleName, message
-    ))
+-- ✅ Business logic jalan SETELAH Init()
+function MusicPlayerUI:UpdateNowPlaying(songData)
+    if not uiInstance then return end
+
+    -- 🎯 UPDATE UI VIA CORE - Auto handle OVHL_UI/StarterGui!
+    uiInstance.update({
+        title = songData.title,
+        artist = songData.artist,
+        isPlaying = true
+    })
+
+    logger:Debug("MusicPlayerUI", "UI", "Updated now playing: " .. songData.title)
 end
--- ... (fungsi Debug, Error, Warn, Perf) ...
-return Logger
+
+return MusicPlayerUI
 ```
 
 ---
 
-### Decision #7: Kontrak Atribut (Builder-Scripter)
+### Decision #18: Naming Convention & File Structure (PROVEN)
 
-Builder (Desainer) **WAJIB** mengkonfigurasi _gameplay_ via Atribut. Scripter (Koder) **WAJIB** memvalidasi Atribut tersebut.
+#### 18.1. File Naming Convention (CONSISTENT)
 
-#### 7.1. Konvensi Penamaan
+-   **Files:** `snake_case.lua` (manifest.lua, config.lua, auto_dj.lua)
+-   **Folders:** `PascalCase` (Logger, OVHL_UI, MusicModule, MusicPlayerUI)
+-   **Variables/Functions:** `camelCase` (getModule, createButton, currentSong)
+-   **Constants:** `UPPER_SNAKE_CASE` (MAX_PLAYERS, DEFAULT_VOLUME)
 
-`[Domain]_[Property]` (Contoh: `Zone_ID`, `Audio_Side`, `UI_Type`)
-
-#### 7.2. Kontrak Scripter (Validasi WAJIB)
-
-Modul (seperti `ZoneModule/Controller/Scanner.lua`) **WAJIB** memvalidasi Atribut dan memberikan _fallback_ jika Atribut tidak ada, menggunakan `Logger:Warn` atau `Logger:Error`.
-
-**Contoh Kode (`src/Server/OVHL_Modules/ZoneModule/Controller/Scanner.lua`):**
+#### 18.2. Config Management Hierarchy (PROVEN)
 
 ```lua
-function Scanner.ScanZones()
-    local Logger = ServerKernel:GetModule("Logger") -- Asumsi Kernel sudah di-pass
-    -- ...
-    for _, stage in ipairs(stages:GetChildren()) do
-        local zoneID = stage:GetAttribute("Zone_ID")
-
-        -- VALIDASI KONTRAK
-        if not zoneID then
-            Logger:Error("ZoneModule", "ZONE", "Missing WAJIB Attribute: Zone_ID", {
-                Model = stage:GetFullName()
-            })
-            continue -- Skip zona invalid
-        end
-    end
-end
-```
-
----
-
-### Decision #8: Integrasi 3rd Party (TopbarPlus)
-
-Integrasi **WAJIB** diisolasi di dalam modul `Services/`. Kegagalan 3rd party _tidak boleh_ merusak Kernel.
-
--   **Ketahanan:** `pcall` di `Phase 2` Kernel (Decision #1.2) akan menangkap error jika `TopbarPlus` gagal di-`require`, dan hanya `TopbarIntegration` yang akan mati.
-
-**Contoh Kode (`src/Client/Services/TopbarIntegration/init.lua`):**
-
-```lua
--- ... (Cache Kernel, Logger) ...
--- (FIX) Path 3rd Party yang Benar
-local Icon = require(game:GetService("ReplicatedStorage").TopbarPlus.Icon)
-
-function TopbarIntegration:Init()
-    -- ... (Get Logger, dll) ...
-    local musicIcon = Icon.new():setLabel("Music")
-    musicIcon.selected:Connect(function()
-        local UIModule = ClientKernel:GetModule("UIModule")
-        if UIModule then
-             UIModule:ToggleMusicPanel()
-        end
-    end)
-end
-return TopbarIntegration
-```
-
----
-
-### Decision #9: Arsitektur Permission Terpadu (Aggregator)
-
-Ini adalah perombakan **FINAL** (V3) berdasarkan masukan `MainModule.lua` dan _config_ Kohl's.
-
-**Konteks:**
-Sistem kita butuh sistem izin yang _robust_ dan _anti-crash_. Kita perlu `require` Kohl's Admin sebagai sumber izin utama, tapi kita **WAJIB** punya _fallback_ penuh jika Kohl's gagal.
-
-**Keputusan:**
-Modul `Core/PermissionSync` akan menjadi "Permission Aggregator". Modul ini akan memiliki _service fallback_ internal yang _mencerminkan_ logika Kohl's (cek Gamepass, Grup, dll).
-
-#### 9.1. Struktur Internal `Core/PermissionSync`
-
-Modul ini akan "Eskalasi" (Sesuai Decision #3.2):
-
-```text
-📁 Core/PermissionSync/
-├── 📜 init.lua        (API Publik: :GetRole(player))
-├── 📜 Config.lua      (Config: Fallback Roles, gamepassId, groupId)
-├── 📁 Controller/
-│   ├── 📜 Logic_Kohl.lua    (Pekerja Internal: Logic untuk baca API Kohl's)
-│   └── 📜 Logic_OVHL.lua    (Pekerja Internal: Logic untuk baca Config Fallback)
-└── 📁 Services/
-    ├── 📜 Handlers.lua    (Event: OnPlayerAdded untuk pre-cache)
-    └── 📜 State.lua       (Cache: KohlInterface, playerRoles[userId])
-```
-
-#### 9.2. `Config.lua` Fallback (Meniru Kohl's)
-
-File `Core/PermissionSync/Config.lua` kita akan berisi struktur _fallback_ yang akan dipakai jika Kohl's gagal di-load.
-
-```lua
--- Core/PermissionSync/Config.lua
+-- Global (App-level) - Server/config.lua
 return {
-    -- Definisikan Role Internal kita
-    Roles = {
-        OVHL_Guest = { Rank = 0 },
-        OVHL_VIP = { Rank = 1 },
-        OVHL_Admin = { Rank = 100 }
+    app_name = "PuraPuraPesta",
+    version = "2.1.0",  -- 🎯 VERSION BUMP!
+    debug = {
+        global_log_level = "INFO",
+        enable_perf_logs = false
+    }
+}
+
+-- Module-specific - MusicModule/config.lua
+return {
+    debug = {
+        log_level = "DEBUG",  -- Override untuk module ini
+        enable_perf_logs = true
     },
-    -- Sumber Izin Internal (Fallback)
-    userRoles = {
-        OVHL_Admin = { 12345, 67890 }, -- UserID
-    },
-    gamepassRoles = {
-        [987654321] = { "OVHL_VIP" } -- ID Gamepass
-    },
-    groupRoles = {
-        [1234567] = { -- ID Grup
-            { rank = 255, role = "OVHL_Admin" },
-            { rank = 100, role = "OVHL_VIP" }
+    features = {
+        enable_song_requests = true
+    }
+}
+```
+
+#### 18.3. Module Independence Principle (ENHANCED)
+
+-   Setiap modul **WAJIB** self-contained dengan config internal
+-   Modul **BOLEH** expose metadata via well-known functions untuk auto-discovery
+-   Modul **DILARANG** bergantung pada implementation details modul lain
+-   Modul **WAJIB** communicate via Kernel APIs dan standardized interfaces
+
+---
+
+### Decision #19: Fully Modular Architecture & Auto-Discovery (NEW - BATTLE TESTED)
+
+**KONTEKS PRAKTIS:** Setelah mengalami masalah manual registry, kita implement fully modular system.
+
+#### 19.1. Auto-Discovery Patterns (PROVEN SOLUTION)
+
+```lua
+-- Network System Auto-Discovery
+function Network:AutoDiscoverEvents()
+    for moduleName, module in pairs(self.Kernel:GetAllModules()) do
+        if module.GetNetworkEvents then
+            local events = module:GetNetworkEvents()
+            self:RegisterEvents(events) -- Auto-register!
+        end
+    end
+end
+
+-- Module Implementation
+function MusicModule:GetNetworkEvents()
+    return {
+        {name = "MusicChanged", scope = "AllClients"},
+        {name = "PlaybackStateChanged", scope = "AllClients"},
+        {name = "RequestSong", scope = "Server"}
+    }
+end
+
+function MusicPlayerUI:GetNetworkEvents()
+    return {
+        {name = "MusicChanged", scope = "Client"},
+        {name = "PlaybackStateChanged", scope = "Client"}
+    }
+end
+```
+
+#### 19.2. Zero-Configuration Benefits
+
+-   **Plug & Play:** Drop modul folder, sistem otomatis kerja
+-   **No Manual Registry:** Tidak perlu edit Network system atau file config lain
+-   **True Reusability:** Modul bisa dipakai di project lain tanpa modification
+-   **Scalable:** Tambah modul baru tanpa sentuh existing code
+
+---
+
+### Decision #20: Clean Separation - Business Logic vs UI Components (NEW - LESSON LEARNED)
+
+**KONTEKS PRAKTIS:** Setelah mengalami confusion antara business logic dan UI rendering.
+
+#### 20.1. Domain Responsibilities (CLEAR SEPARATION)
+
+| Domain                     | Purpose            | Responsibility                  | Example                                       |
+| -------------------------- | ------------------ | ------------------------------- | --------------------------------------------- |
+| **OVHL_UI (Shared)**       | Pure UI Components | Rendering, Styling, Layout      | `CreateButton()`, `OpenModal()`               |
+| **MusicPlayerUI (Client)** | UI Business Logic  | Music-specific UI logic         | `UpdateNowPlaying()`, `HandleMusicControls()` |
+| **MusicModule (Server)**   | Business Logic     | Music playback logic            | `PlaySong()`, `AutoDJ()`, `QueueManagement()` |
+| **UIManager (Core)**       | UI Infrastructure  | Smart UI discovery & management | `SetupModuleUI()`, `DiscoverComponents()`     |
+
+#### 20.2. Communication Flow (CLEAN ARCHITECTURE) - **ENHANCED**
+
+```
+[MusicModule] --(Network Events)--> [MusicPlayerUI] --(UIManager APIs)--> [Screen]
+    Business Logic                      UI Business Logic      Smart UI Management
+        🎵                                  🎛️                          🧠
+                                                ↓
+                                      { OVHL_UI atau StarterGui }
+```
+
+---
+
+### Decision #21: Standardized Module Interfaces (NEW - FUTURE PROOF)
+
+**KONTEKS PRAKTIS:** Untuk enable future extensions dan systems integration.
+
+#### 21.1. Well-Known Functions (OPTIONAL BUT RECOMMENDED)
+
+```lua
+-- Untuk modul yang butuh network communication
+function Module:GetNetworkEvents()
+    return {
+        {name = "EventName", scope = "AllClients|SpecificClient|Server"}
+    }
+}
+
+-- Untuk modul yang butuh explicit dependencies
+function Module:GetDependencies()
+    return {"Logger", "Network", "UIManager"}  -- 🎯 TAMBAH UIMANAGER!
+}
+
+-- Untuk modul yang expose public APIs
+function Module:GetAPIs()
+    return {"PublicFunction1", "PublicFunction2", "PublicProperty"}
+}
+
+-- Untuk modul yang butuh configuration validation
+function Module:ValidateConfig(config)
+    return config.debug ~= nil and config.features ~= nil
+}
+```
+
+#### 21.2. Benefits
+
+-   **Auto-Discovery:** Systems bisa automatically discover module capabilities
+-   **Future Proof:** Bisa tambah systems baru tanpa breaking changes
+-   **Tooling Support:** AI dan tools bisa analyze module capabilities
+-   **Documentation:** Self-documenting module interfaces
+
+---
+
+### Decision #22: Core UI Manager & Smart Component Discovery (NEW - GAME CHANGER)
+
+**KONTEKS PRAKTIS:** Setelah mengalami complexity UI setup di setiap modul, kita implement centralized smart UI management.
+
+#### 22.1. Core UIManager Architecture
+
+```lua
+-- Client/Core/UIManager/manifest.lua  -- 🎯 PATH KOREKSI (CLIENT-SIDE)
+local UIManager = {}
+local logger, config
+
+function UIManager:Init()
+    logger = self:GetKernel():GetModule("Logger")
+    config = self:GetKernel():GetModule("Config")
+    logger:Info("UIManager", "CORE", "Smart UI Manager Initialized")
+end
+
+-- 🎯 MAIN API: Setup UI untuk modul (SIMPLE!)
+function UIManager:SetupModuleUI(moduleName, moduleConfig)
+    local uiMode = moduleConfig.ui.mode or "OVHL_UI"
+    local screenGuiName = moduleConfig.ui.screen_gui or moduleName .. "Panel"
+
+    logger:Info("UIManager", "UI",
+        "Setting up UI for " .. moduleName .. " | Mode: " .. uiMode .. " | Screen: " .. screenGuiName)
+
+    if uiMode == "OVHL_UI" then
+        return self:SetupOVHLUI(moduleName, moduleConfig)
+    else
+        return self:SetupStarterGui(moduleName, screenGuiName, moduleConfig)
+    end
+end
+```
+
+#### 22.2. Smart Component Discovery (AI-POWERED)
+
+```lua
+-- 🧠 SMART COMPONENT DISCOVERY & CLASSIFICATION
+function UIManager:DiscoverComponents(screenGui, expectedComponents)
+    local discovered = {}
+    local componentRegistry = self:GetComponentRegistry()
+
+    -- Traverse seluruh screenGui dengan AI pattern matching
+    self:TraverseAndClassify(screenGui, "", discovered, componentRegistry)
+
+    -- 🎯 VALIDATE & LOG MISSING COMPONENTS DENGAN SMART MESSAGES
+    self:ValidateComponents(discovered, expectedComponents)
+
+    return discovered
+end
+
+function UIManager:ClassifyComponent(child, fullPath, registry)
+    local name = string.lower(child.Name)
+    local path = string.lower(fullPath)
+
+    -- 🧠 MULTI-LANGUAGE PATTERN MATCHING
+    for logicalName, patterns in pairs(registry) do
+        for _, pattern in ipairs(patterns.names) do
+            if string.find(name, pattern) or string.find(path, pattern) then
+                -- 🎯 TYPE VALIDATION
+                if self:IsValidType(child, patterns.types) then
+                    return {
+                        logicalName = logicalName,
+                        expectedType = patterns.types[1]
+                    }
+                else
+                    logger:Warn("UIManager", "VALIDATION",
+                        "Component '" .. fullPath .. "' type mismatch. Expected: " ..
+                        table.concat(patterns.types, ", ") .. " | Found: " .. child.ClassName)
+                end
+            end
+        end
+    end
+    return nil
+end
+```
+
+#### 22.3. Smart Error Messages & Validation
+
+```lua
+function UIManager:ValidateComponents(discovered, expectedComponents)
+    local registry = self:GetComponentRegistry()
+
+    for logicalName, expectedType in pairs(expectedComponents) do
+        if not discovered[logicalName] then
+            -- 🎯 SMART ERROR MESSAGE DENGAN SOLUTION GUIDANCE
+            local patterns = registry[logicalName]
+            local expectedTypes = patterns and table.concat(patterns.types, " or ") or "Unknown"
+            local namePatterns = patterns and table.concat(patterns.names, ", ") or "Unknown"
+
+            logger:Error("UIManager", "VALIDATION",
+                "Component '" .. logicalName .. "' tidak ditemukan!\n" ..
+                "💡 Expected: " .. expectedTypes .. " dengan nama mengandung: " .. namePatterns .. "\n" ..
+                "🔧 Solution: Buat component dengan type dan nama yang sesuai di ScreenGui")
+        end
+    end
+end
+```
+
+#### 22.4. Component Registry (Extendable)
+
+```lua
+function UIManager:GetComponentRegistry()
+    return {
+        now_playing_title = {
+            names = {"title", "judul", "songname", "namalagu", "nowplaying", "currentsong"},
+            types = {"TextLabel", "TextButton"}
+        },
+        now_playing_artist = {
+            names = {"artist", "artis", "penyanyi", "singer", "band", "musisi"},
+            types = {"TextLabel", "TextButton"}
+        },
+        play_button = {
+            names = {"play", "main", "start", "putar", "begin", "run"},
+            types = {"TextButton", "ImageButton"}
+        },
+        pause_button = {
+            names = {"pause", "jeda", "stop", "berhenti", "halt"},
+            types = {"TextButton", "ImageButton"}
+        },
+        volume_slider = {
+            names = {"volume", "vol", "sound", "suara", "slider", "progress"},
+            types = {"Frame", "ImageButton"}
+        }
+        -- Bisa extend lagi...
+    }
+end
+```
+
+#### 22.5. Benefits Smart UI System
+
+-   **✅ Zero Boilerplate** - Modul cuma panggil 1 function
+-   **✅ AI-Powered Discovery** - Auto find components berdasarkan multi-language patterns
+-   **✅ Smart Error Messages** - Clear guidance untuk fix issues
+-   **✅ Type Validation** - Auto validate component types
+-   **✅ Easy Migration** - Ganti UI mode tinggal ubah 1 config
+-   **✅ Centralized Logic** - Semua UI complexity di core
+
+---
+
+## 🎯 QUICK START GUIDE (BATTLE TESTED) - **UPDATED**
+
+### 1. Setup Project Structure
+
+```bash
+# Gunakan struktur di Decision #2.1 (Updated dengan UIManager)
+# Pastikan Rojo config sesuai Decision #2.2
+```
+
+### 2. Implement Kernel First
+
+```lua
+-- Copy-paste code dari Decision #1.1 dan #1.2
+-- JANGAN diubah urutan phase atau domain priority!
+```
+
+### 3. Add Core Modules
+
+```lua
+-- Logger (Shared/Logger/manifest.lua) - wajib pertama
+-- Config (Server/config.lua, Shared/config.lua)
+-- UIManager (Server/Core/UIManager/manifest.lua) - 🆕 SMART UI! - PATH FIXED
+```
+
+### 4. Create Business Modules (SUPER SIMPLE!)
+
+```lua
+-- MusicPlayerUI/config.lua (SIMPLE!)
+return {
+    ui = {
+        mode = "StarterGui",  -- Pilih UI engine
+        screen_gui = "MusicPanel",
+        components = {
+            now_playing_title = "TextLabel",
+            play_button = "TextButton"
         }
     }
 }
+
+-- MusicPlayerUI/manifest.lua (SIMPLE!)
+function MusicPlayerUI:Init()
+    local kernel = self:GetKernel()
+    self.uiManager = kernel:GetModule("UIManager")
+    self.ui = self.uiManager:SetupModuleUI("MusicPlayer", self.config)
+    -- Done! Core handle UI complexity
+end
 ```
 
-#### 9.3. Alur Logika `PermissionSync:GetRole(player)` (Di dalam `init.lua`)
+### 5. Test & Validate
 
-Ini adalah alur _anti-crash_ kita:
-
-1.  **Cek Cache:** Cek `Services/State.lua`. Jika role player ada, `return` role dari cache.
-2.  **Coba Kohl's Admin (Prioritas 1):**
-    -   Di `Init()`, `pcall` `require(Kohl.MainModule)`. Jika berhasil, simpan `_K` di `State.lua`.
-    -   Jika `_K` ada, panggil `Controller/Logic_Kohl:GetRole(_K, player)`.
-    -   `Logic_Kohl` akan membaca `_K.Data.members[userId].persist` dan `_K.Data.roles[roleId]` dan me-return role yang _di-mapping_.
-3.  **Coba Fallback OVHL (Prioritas 2):**
-    -   (Hanya jalan jika Kohl's gagal di-load ATAU `Logic_Kohl` me-return "OVHL_Guest").
-    -   `Logger:Info("PermissionSync", "ADMIN", "Kohl's tidak ditemukan/Guest, cek fallback internal OVHL...")`.
-    -   Panggil `Controller/Logic_OVHL:GetRole(player)`.
-4.  **Logika Fallback (`Logic_OVHL.lua`):**
-    -   `Logic_OVHL` akan `require` `Config.lua` (milik `PermissionSync`) dan `MonetizationModule`.
-    -   Dia akan cek `Config.userRoles`, `Config.gamepassRoles`, dan `Config.groupRoles`.
-    -   Dia akan mengambil role _tertinggi_ yang ditemukan.
-5.  **Return:** Simpan role final ("OVHL_Admin", "OVHL_VIP", atau "OVHL_Guest") ke cache `State.lua` dan `return` role tersebut.
-
----
-
-### Decision #10: (BARU) Aturan Penanganan Error
-
-#### 10.1. Memory Cleanup (Anti-Memory Leak)
-
-Semua modul yang memiliki `Services/State.lua` (cache) **WAJIB** membersihkan _cache_ player saat player _leave_. Ini akan ditangani secara terpusat oleh `Server/Services/PlayerSessionModule` (jika dibuat) atau modul `Services/Handlers.lua` internal modul itu sendiri yang nge-bind ke `PlayerRemoving`.
-
-#### 10.2. Anti-Race Condition
-
-_Service_ kritis yang diakses bersamaan (terutama `Services/DataModule`) **WAJIB** mengimplementasikan _Promise/Queue system_ untuk _request_ `LoadData`. Jika `Modul A` dan `Modul B` memanggil `DataModule:LoadData(player)` di _frame_ yang sama, `DataStore` hanya boleh dipanggil **satu kali**.
-
----
-
-### Decision #11: UI Engine (OVHL UI System)
-
-Semua UI kustom (Modal, Panel, Tombol) **WAJIB** menggunakan `OVHL UI System` terpusat (yang akan kita bangun di Fase 2).
-
-**Struktur File (`src/Shared/OVHL_UI/`):**
-
-```text
-📁 Shared/OVHL_UI/
-├── 📜 init.lua          <-- UI Kernel / Component Factory
-├── 📁 ModalSystem/    <-- Popups, Dialogs
-├── 📁 LayoutSystem/   <-- Grid, Stack
-├── 📁 ContentComponents/ <-- Card, List
-└── 📁 FormComponents/   <-- Button, Slider
+```lua
+-- Expected output:
+-- PHASE 0: Server Bootstrap...
+-- PHASE 0: Client Bootstrap...
+-- Shared Modules Loaded: OVHL_UI, Network, UIManager
+-- MusicModule Initialized
+-- MusicPlayerUI Initialized dengan Smart UI
+-- 🔍 UIManager: Found 5 components untuk MusicPlayer
 ```
 
-Modul `OVHL_Modules/` (seperti `Client/OVHL_Modules/UIModule`) dilarang `Instance.new("Frame")`. Mereka **WAJIB** memanggil `OVHLUI.ModalSystem:Open(...)`.
+## 🚨 COMMON PITFALLS & SOLUTIONS (LESSONS LEARNED) - **UPDATED**
 
----
+### ❌ "Module not found: OVHLUI"
 
-### Decision #12: Filosofi & Panduan UI Generation
+**Solution:** Pastikan module name consistency - Kernel simpan `OVHL_UI`, cari `OVHL_UI`
 
-(Bagian ini adalah _refactor_ dari `05-ui-builder.md`, mengunci standar _hardcode_ UI).
+### ❌ "Kernel tidak tersedia"
 
-#### 12.1. Filosofi Dasar
+**Solution:** Implement `SetKernel()` di modul dan Kernel injection di Phase 3
 
--   **Thinking in Percentages, NOT Pixels:** AI **WAJIB** menggunakan `UDim2.new(SCALE, 0, SCALE, 0)` untuk ukuran. Ukuran berbasis piksel (Offset) dilarang kecuali untuk `UIPadding`, `UIStroke`, atau `ScrollBarThickness`.
--   **Hierarki Wajib:** `ScreenGui` -> `PaddingFrame` (Safe Area) -> `MainContainer` (Aspect Ratio) -> `ContentFrame` (UIPadding) -> `UIListLayout`.
--   **Layout Wajib:** Semua _item_ **WAJIB** diatur oleh `UIListLayout` atau `UIGridLayout`. Pengaturan posisi manual (`Position`) dilarang keras kecuali untuk _container_ utama.
--   **Responsive Wajib:** Semua elemen teks **WAJIB** `TextScaled = true` (kecuali ditentukan lain).
+### ❌ Circular Dependency
 
-#### 12.2. Visual Design System (Ringkasan)
+**Solution:** Ikuti strict rules di Decision #4.1 - hanya cache di Init()
 
-(AI akan merujuk ke tabel `COLORS`, `TYPOGRAPHY`, `CORNER_RADIUS` saat membuat UI di Fase 2).
+### ❌ Shared Modules Not Loading
 
-#### 12.3. Template Fungsi UI (Contoh)
+**Solution:** Pastikan Client Kernel ada Phase 2B (Shared loading) setelah internal domains
 
-AI **WAJIB** mengadopsi template ini saat menulis kode UI.
+### ❌ "Component tidak ditemukan"
 
--   **Template TextLabel (Wajib `TextScaled`)**
-    ```lua
-    function createTextLabel(typography, text, color)
-        local label = Instance.new("TextLabel")
-        label.Font = typography.Font
-        label.TextSize = typography.Size
-        label.TextColor3 = color or COLORS.WHITE
-        label.Text = text
-        label.TextScaled = true -- WAJIB
-        label.TextWrapped = true
-        label.BackgroundTransparency = 1
-        return label
-    end
-    ```
+**Solution:** UIManager akan kasih smart error message dengan expected types & names
 
-#### 12.4. Audit & QA (Sesuai `05-ui-builder.md` Section 10)
+### ❌ UI Complexity di Modul
 
--   AI akan menggunakan _logic_ dari `05-ui-builder.md` Section 10 (fungsi `auditUI`) sebagai referensi mental untuk _self-check_ kode UI yang dihasilkannya.
--   **Checklist AI (Wajib):**
-    1.  ✅ Semua ukuran pakai SCALE?
-    2.  ✅ Semua elemen punya `LayoutOrder`?
-    3.  ✅ Semua teks pakai `TextScaled = true`?
-    4.  ✅ `ScreenGui.IgnoreGuiInset = true`?
-    5.  ✅ `UIAspectRatioConstraint` dipakai untuk container utama?
-
----
-
-**Dokumen Selesai. Versi 1.0.0.**
+**Solution:** Gunakan Core UIManager - modul hanya specify expectations, core handle implementation

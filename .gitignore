@@ -5,6 +5,8 @@
 
 # lokal
 lokal/
+UI/
+test/
 package/
 node_module/
 # VS Code
